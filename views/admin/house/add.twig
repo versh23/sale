@@ -1,0 +1,68 @@
+{% extends 'admin/layout.twig' %}
+
+{% block content %}
+<div class="col-sm-8 col-md-8">
+          <form>
+            <div class="form-group">
+              <label class="control-label">Название дома</label>
+              <div class="controls">
+                <input type="text" class="form-control">
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="control-label">Адрес</label>
+              <div class="controls">
+                <input type="text" class="form-control">
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="control-label">Тип материала</label>
+              <div class="controls">
+                <select class="form-control">
+                  <option>Панельный</option>
+                  <option>Кирпичный</option>
+                  <option>Монолитный</option>
+                </select>
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="control-label">Кол-во этажей</label>
+              <div class="controls">
+                <input type="text" class="form-control">
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="control-label">Дата сдачи</label>
+              <div class="controls">
+                <input type="text" class="form-control">
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="control-label">Фотоальбом типа</label>
+              <div class="controls">
+                <button class="btn btn-primary">Выбрать файлы</button>
+                <span class="help-block">Первая фотка будет как главная</span>
+                <div>
+                  <img src="https://app.divshot.com/img/placeholder-100x100.gif">
+                  <img src="https://app.divshot.com/img/placeholder-100x100.gif">
+                  <img src="https://app.divshot.com/img/placeholder-100x100.gif">
+                  <img src="https://app.divshot.com/img/placeholder-100x100.gif">
+                </div>
+              </div>
+            </div>
+            <div class="panel panel-default">
+              <div class="panel-heading">Дополнительные признаки
+              </div>
+              <div class="panel-body">
+                <div class="form-group">
+                  <label class="control-label">Есть ли там то то</label>
+                  <div class="controls">
+                    <input type="text" class="form-control">
+                  </div>
+                </div>
+              </div>
+            </div>
+            <button class="btn pull-right btn-success">Добавить</button>
+          </form>
+        </div>
+{% endblock %}  

@@ -1,0 +1,25 @@
+{% extends 'layout.twig' %}
+
+{% block body %}
+<div class="row">
+  <div class="col-sm-4 col-md-4">
+    <div class="panel panel-default">
+      <div class="panel-heading">Панель управления
+      </div>
+      <div class="panel-body">
+        <ul class="nav nav-pills nav-stacked">
+          <li {% if subMenu == 'House' %}class="active"{% endif %}>
+            <a href="{{url('adminHouse.Index')}}">Дома</a>
+          </li>
+          <li {% if subMenu == 'Apartment' %}class="active"{% endif %}>
+            <a href="{{url('adminApartment.Index')}}">Квартиры</a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  {% block content %}{% endblock %}
+</div>
+{% endblock %}
+
+

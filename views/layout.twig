@@ -1,0 +1,57 @@
+<!doctype html>
+
+<html>
+  
+  <head>
+    <title>{% block title %}{% endblock %}</title>
+    <meta name="viewport" content="width=device-width">
+    {% block css %}
+      <link rel="stylesheet" href="https://djyhxgczejc94.cloudfront.net/frameworks/bootstrap/3.0.0/themes/white-plum/bootstrap.min.css">
+      <link rel="stylesheet" href="/css/main.css">
+    {% endblock %}   
+
+  </head>
+  
+  <body>
+    <div class="container">
+      <div class="navbar navbar-default">
+        <div class="container">
+          <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+              <span class="sr-only">Toggle navigation</span><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span>
+            </button>
+            <a href="{{ path('index') }}" class="navbar-brand">БЕЛСМ</a>
+          </div>
+          <div class="collapse navbar-collapse" style>
+            <ul class="nav navbar-nav">
+              <li {% if mainMenu == 'index' %}class="active"{% endif %}>
+                <a href="{{ path('index') }}">Главная</a>
+              </li>
+                          
+            {% if app.user and is_granted('ROLE_ADMIN') %}
+              <li {% if mainMenu == 'adminIndex' %}class="active"{% endif %}>
+                <a href="{{path('adminIndex')}}">Админка</a>
+              </li>
+            {% endif %}
+            </ul>
+            <ul class="nav navbar-nav pull-right">
+            {% if app.user %}
+                <li><a href="{{ path('logout') }}">Выйти</a></li> 
+            {% else %}
+                 <li {% if mainMenu == 'loginPage' %}class="active"{% endif %}><a href="{{ path('loginPage') }}">Войти</a></li> 
+            {% endif %}
+            </ul>
+          </div>
+        </div>
+      </div>
+      {% block body %}
+
+      {% endblock %}
+    </div>
+    {% block js %}
+    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+    <script type="text/javascript" src="https://netdna.bootstrapcdn.com/bootstrap/3.0.1/js/bootstrap.min.js"></script>
+    {% endblock %}
+  </body>
+
+</html>
