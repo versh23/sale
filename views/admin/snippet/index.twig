@@ -1,0 +1,22 @@
+{% extends 'admin/layout.twig' %}
+
+{% block content %}
+    <div class="col-sm-8 col-md-8">
+        <p><a class="btn pull-right btn-success" href="{{ path('adminSnippet.Add') }}">Добавить</a></p>
+
+        <div class="clearfix"></div>
+        <p></p>
+        <ul class="list-group">
+            {% for snippet in snippets %}
+                <li class="list-group-item">
+                    {{ snippet.label }}
+                    <div class="pull-right btn-group">
+                        <a href="{{ path('adminSnippet.Edit', {id : snippet.id}) }}" type="button" class="btn btn-warning">Изменить</a>
+                        <a href="{{ path('adminSnippet.Remove', {id : snippet.id}) }}" type="button" class="btn btn-danger">Удалить</a>
+                    </div>
+                    <div class="clearfix"></div>
+                </li>
+            {% endfor %}
+        </ul>
+    </div>
+{% endblock %}   

@@ -13,8 +13,8 @@
                         {{ house.name }} ({{ house.address }})
                     </span>
                     <div class="pull-right btn-group">
-                        <a href="{{ url('adminHouse.Edit', {id : house.id}) }}" type="button" class="btn btn-warning">Изменить</a>
-                        <a href="{{ url('adminHouse.Remove', {id : house.id}) }}" type="button" class="btn btn-danger">Удалить</a>
+                        <a href="{{ path('adminHouse.Edit', {id : house.id}) }}" type="button" class="btn btn-warning">Изменить</a>
+                        <a href="{{ path('adminHouse.Remove', {id : house.id}) }}" type="button" class="btn btn-danger">Удалить</a>
                     </div>
                     <div class="clearfix"></div>
                 </li>

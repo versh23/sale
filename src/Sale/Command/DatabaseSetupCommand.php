@@ -72,6 +72,16 @@ class DatabaseSetupCommand extends Command{
         $tables[] = $apartmentTable;
 
 
+        $snippetTable = $schema->createTable('snippet');
+        $snippetTable->addColumn('id', 'integer', array('autoincrement' => true));
+        $snippetTable->setPrimaryKey(array('id'));
+        $snippetTable->addColumn('label', 'string', array('length' => 32));
+        $snippetTable->addColumn('type', 'integer');
+        $snippetTable->addColumn('value', 'array');
+
+        $tables[] = $snippetTable;
+
+
         return $tables;
     }
 

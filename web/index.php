@@ -1,5 +1,7 @@
 <?php
 
+use Doctrine\DBAL\Connection;
+use Doctrine\DBAL\Types\Type;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -130,6 +132,91 @@ $app->post('/admin/apartment/add', function(Request $request) use($app){
 
 /**
  * End Apartment Actions
+ */
+
+
+
+
+
+
+
+
+
+/**
+ * Snippet Actions
+ */
+$app->get('/admin/snippet/add', function() use($app){
+    $houses = $app['db']->fetchAll('SELECT h.id as id, h.name as name FROM house as h');
+
+    return $app->render('admin/snippet/add.twig',[
+        'houses'    =>  $houses
+    ]);
+})->bind('adminSnippet.Add');
+
+$app->get('/admin/snippet', function() use($app){
+    $snippets = $app['db']->fetchAll('SELECT * FROM snippet');
+    return $app->render('admin/snippet/index.twig',[
+        'snippets'    =>  $snippets
+    ]);
+})->bind('adminSnippet.Index');
+
+$app->get('admin/snippet/edit/{id}', function($id) use($app){
+    $snippet = $app['db']->fetchAssoc('SELECT * FROM snippet where id = :id', ['id'=>$id]);
+    $snippet['value'] = $app['db']->convertToPHPValue($snippet['value'], TYPE::TARRAY);
+    return $app->render('admin/snippet/add.twig',[
+        'snippet' =>  $snippet,
+    ]);
+})->bind('adminSnippet.Edit');
+
+$app->get('admin/snippet/remove/{id}', function($id) use($app){
+    $db =  $app['db'];
+    $db->delete('snippet', ['id' => $id]);
+    return $app->redirect($app->url('adminSnippet.Index'));
+})->bind('adminSnippet.Remove');
+
+
+$app->post('admin/snippet/edit/{id}', function(Request $request, $id) use($app){
+    $snippet = $request->get('snippet');
+    $values = explode(',',$snippet['value']);
+    $value = [];
+    if(count($values)){
+        foreach($values as $v){
+            $value[] = trim($v);
+        }
+    }else{
+        $value[] = $values;
+    }
+    $snippet['value'] = $value;
+    /**
+     * @var Connection $db
+     */
+    $db =  $app['db'];
+    $db->update('snippet', $snippet, ['id'=>$id], [3 => Type::TARRAY]);
+    return $app->redirect($app->url('adminSnippet.Index'));
+})->bind('adminSnippet.Save');
+
+$app->post('/admin/snippet/add', function(Request $request) use($app){
+    $snippet = $request->get('snippet');
+    $values = explode(',',$snippet['value']);
+    $value = [];
+    if(count($values)){
+        foreach($values as $v){
+            $value[] = trim($v);
+        }
+    }else{
+        $value[] = $values;
+    }
+    $snippet['value'] = $value;
+    /**
+     * @var Connection $db
+     */
+    $db =  $app['db'];
+    $db->insert('snippet', $snippet, [3 => Type::TARRAY]);
+    return $app->redirect($app->url('adminSnippet.Index'));
+})->bind('adminSnippet.Create');
+
+/**
+ * End Snippet Actions
  */
 
 $app->get('/login', function(Request $request) use($app){
