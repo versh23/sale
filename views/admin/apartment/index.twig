@@ -1,32 +1,24 @@
 {% extends 'admin/layout.twig' %}
 
 {% block content %}
-<div class="col-sm-8 col-md-8">
-          <p><a class="btn pull-right btn-success" href="{{path('adminApartment.Add')}}">Добавить</a></p>
-          <div class="clearfix"></div>
-          <p></p>
-          <ul class="list-group">
-            <li class="list-group-item">Квартира 1
-              <div class="pull-right btn-group">
-                <button type="button" class="btn btn-warning">Изменить</button>
-                <button type="button" class="btn btn-danger">Удалить</button>
-              </div>
-              <div class="clearfix"></div>
-            </li>
-            <li class="list-group-item">Квартира 1
-              <div class="pull-right btn-group">
-                <button type="button" class="btn btn-warning">Изменить</button>
-                <button type="button" class="btn btn-danger">Удалить</button>
-              </div>
-              <div class="clearfix"></div>
-            </li>
-            <li class="list-group-item">Квартира 1
-              <div class="pull-right btn-group">
-                <button type="button" class="btn btn-warning">Изменить</button>
-                <button type="button" class="btn btn-danger">Удалить</button>
-              </div>
-              <div class="clearfix"></div>
-            </li>
-          </ul>
-        </div>
+    <div class="col-sm-8 col-md-8">
+        <p><a class="btn pull-right btn-success" href="{{ path('adminApartment.Add') }}">Добавить</a></p>
+
+        <div class="clearfix"></div>
+        <p></p>
+        <ul class="list-group">
+            {% for apartment in apartments %}
+                <li class="list-group-item">
+                    {{ apartment.id }}
+                    <div class="pull-right btn-group">
+                        <a href="{{ path('adminApartment.Edit', {id: apartment.id}) }}" type="button"
+                           class="btn btn-warning">Изменить</a>
+                        <a href="{{ path('adminApartment.Remove', {id: apartment.id}) }}" type="button"
+                           class="btn btn-danger">Удалить</a>
+                    </div>
+                    <div class="clearfix"></div>
+                </li>
+            {% endfor %}
+        </ul>
+    </div>
 {% endblock %}   

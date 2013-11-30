@@ -1,28 +1,30 @@
 {% extends 'admin/layout.twig' %}
 
 {% block content %}
+    {% set url = (apartment.id) ? path('adminApartment.Save', {id: apartment.id}) : path('adminApartment.Create') %}
+    {% set text = (apartment.id) ? 'Сохранить' : 'Добавить' %}
 <div class="col-sm-8 col-md-8">
-          <form>
+          <form method="post" action="{{ url }}">
             <div class="form-group">
               <label class="control-label">В доме ...</label>
               <div class="controls">
-                <select class="form-control">
-                  <option>дом 1</option>
-                  <option>дом 2</option>
-                  <option>дом 3</option>
+                <select class="form-control" name="apartment[house_id]">
+                {% for house in houses %}
+                    <option {% if apartment.house_id == house.id %} selected {% endif %} value="{{ house.id }}">{{ house.name }}</option>
+                {% endfor %}
                 </select>
               </div>
             </div>
             <div class="form-group">
               <label class="control-label">Кол - во комнат</label>
               <div class="controls">
-                <input type="text" class="form-control">
+                <input type="text" class="form-control" name="apartment[cnt_room]" value="{{ apartment.cnt_room }}">
               </div>
             </div>
             <div class="form-group">
               <label class="control-label">Квадратура</label>
               <div class="controls">
-                <input type="text" class="form-control">
+                <input type="text" class="form-control" name="apartment[square]" value="{{ apartment.square }}">
               </div>
             </div>
             <div class="form-group">
@@ -50,7 +52,7 @@
                 </div>
               </div>
             </div>
-            <button class="btn pull-right btn-success">Добавить</button>
+            <button class="btn pull-right btn-success">{{ text }}</button>
           </form>
 </div>  
 {% endblock %}  

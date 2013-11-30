@@ -1,32 +1,24 @@
 {% extends 'admin/layout.twig' %}
 
 {% block content %}
-<div class="col-sm-8 col-md-8">
-          <p><a class="btn pull-right btn-success" href="{{path('adminHouse.Add')}}">Добавить</a></p>
-          <div class="clearfix"></div>
-          <p></p>
-          <ul class="list-group">
-            <li class="list-group-item">Дом 1
-              <div class="pull-right btn-group">
-                <button type="button" class="btn btn-warning">Изменить</button>
-                <button type="button" class="btn btn-danger">Удалить</button>
-              </div>
-              <div class="clearfix"></div>
-            </li>
-            <li class="list-group-item">Дома 1
-              <div class="pull-right btn-group">
-                <button type="button" class="btn btn-warning">Изменить</button>
-                <button type="button" class="btn btn-danger">Удалить</button>
-              </div>
-              <div class="clearfix"></div>
-            </li>
-            <li class="list-group-item">Дом 1
-              <div class="pull-right btn-group">
-                <button type="button" class="btn btn-warning">Изменить</button>
-                <button type="button" class="btn btn-danger">Удалить</button>
-              </div>
-              <div class="clearfix"></div>
-            </li>
-          </ul>
-        </div>
+    <div class="col-sm-8 col-md-8">
+        <p><a class="btn pull-right btn-success" href="{{ path('adminHouse.Add') }}">Добавить</a></p>
+
+        <div class="clearfix"></div>
+        <p></p>
+        <ul class="list-group">
+            {% for house in houses %}
+                <li class="list-group-item">
+                    <span class="b-house-list__name">
+                        {{ house.name }} ({{ house.address }})
+                    </span>
+                    <div class="pull-right btn-group">
+                        <a href="{{ url('adminHouse.Edit', {id : house.id}) }}" type="button" class="btn btn-warning">Изменить</a>
+                        <a href="{{ url('adminHouse.Remove', {id : house.id}) }}" type="button" class="btn btn-danger">Удалить</a>
+                    </div>
+                    <div class="clearfix"></div>
+                </li>
+            {% endfor %}
+        </ul>
+    </div>
 {% endblock %}   

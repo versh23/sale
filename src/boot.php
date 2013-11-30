@@ -2,10 +2,13 @@
 
 //DEBUG
 $app['debug'] = true;
-
+$app['twig.options'] = ['1'];
 $app->register(new Silex\Provider\TwigServiceProvider(), array(
     'twig.path' => __DIR__.'/../views',
-    'twig.options '	=>	array('cache' => __DIR__.'/../cache/twig')
+    'twig.options'	=>	array(
+        'cache' => __DIR__.'/../cache/twig',
+        'strict_variables'   =>  false
+    )
 ));
 
 $app->register(new Silex\Provider\UrlGeneratorServiceProvider());
@@ -17,6 +20,7 @@ $app->register(new Silex\Provider\DoctrineServiceProvider(), array(
         'host'	   => 'localhost',
         'user'	   => 'root',
         'password' => 'bratka',
+        'charset'  => 'utf8'
     ),
 
 ));
