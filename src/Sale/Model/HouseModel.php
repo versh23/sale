@@ -30,5 +30,9 @@ class HouseModel extends AbstractModel {
         return 'house';
     }
 
+    public function getList(){
+        return $this->db->fetchAll('SELECT h.id as id, h.name as name FROM ' . $this->getTable() . ' as h');
+    }
+
 
 }

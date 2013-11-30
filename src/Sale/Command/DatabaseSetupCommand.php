@@ -5,6 +5,7 @@ use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Schema\AbstractSchemaManager;
 use Doctrine\DBAL\Schema\Comparator;
 use Doctrine\DBAL\Schema\Schema;
+use Sale\Model\AbstractModel;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -13,16 +14,28 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class DatabaseSetupCommand extends Command{
 
+    /**
+     * @var Connection $db;
+     */
     private $db = null;
     /**
      * @var AbstractSchemaManager sm
      */
     private $sm = null;
 
-    public function __construct(Connection $db){
-        $this->db = $db;
-        $this->sm = $db->getSchemaManager();
+    /**
+     * @var \CatalogApplication $app
+     */
+    private $app;
 
+    private $keys;
+
+    public function __construct(\CatalogApplication $app){
+        $this->db = $app['db'];
+        $this->sm = $this->db->getSchemaManager();
+        $this->keys = $app->keys();
+
+        $this->app = $app;
         parent::__construct();
 
     }
@@ -44,33 +57,23 @@ class DatabaseSetupCommand extends Command{
         return $tables;
     }
 
+    private function getSchemas(){
+        $schemas = [];
+        foreach($this->keys as $key){
+            if(preg_match('/model\.(\S+)/', $key, $matches)){
+                if($this->app[$key] instanceof AbstractModel){
+                    $schemas[$matches[1]] = $this->app[$key]->getTableSchema();
+                }
+            }
+        }
+        return $schemas;
+    }
+
     private function getClearTables(){
 
+        $tables = $this->getSchemas();
+
         $schema = new Schema();
-        $tables = [];
-
-        $houseTable = $schema->createTable('house');
-        $houseTable->addColumn('id', 'integer', array('autoincrement' => true));
-        $houseTable->setPrimaryKey(array('id'));
-        $houseTable->addColumn('name', 'string', array('length' => 32));
-        $houseTable->addColumn('address', 'string', array('length' => 32));
-        $houseTable->addColumn('material', 'integer', array('length' => 1));
-        $houseTable->addColumn('floor', 'integer', array('length' => 2));
-        $houseTable->addColumn('deliverydate', 'string', array('length' => 32));
-
-        $tables[] = $houseTable;
-
-
-        $apartmentTable = $schema->createTable('apartment');
-        $apartmentTable->addColumn('id', 'integer', array('autoincrement' => true));
-        $apartmentTable->setPrimaryKey(array('id'));
-        $apartmentTable->addColumn('house_id', 'integer');
-        $apartmentTable->addForeignKeyConstraint($houseTable, ['house_id'], ['id'], ['onDelete'=>'CASCADE']);
-        $apartmentTable->addColumn('cnt_room', 'integer');
-        $apartmentTable->addColumn('square', 'integer');
-
-        $tables[] = $apartmentTable;
-
 
         $snippetTable = $schema->createTable('snippet');
         $snippetTable->addColumn('id', 'integer', array('autoincrement' => true));

@@ -14,8 +14,6 @@ $app = require __DIR__.'/../src/app.php';
 
 $app->before(function (Request $request) use($app) {
 
-    //Register model
-    $app['model.house'] = new \Sale\Model\HouseModel($app['db']);
 
 	$route = $request->get('_route');
 
@@ -40,14 +38,14 @@ $app->get('/admin', function() use($app){
 })->bind('adminIndex');
 
 
+//@TODO empty result =404;
+//@TODO mount controller
 
 /**
  * Houses Actions
  */
 $app->get('/admin/house', function() use($app){
-
     $houses = $app['model.house']->getAll();
-
 	return $app->render('admin/house/index.twig',[
         'houses'    =>  $houses
     ]);
@@ -90,23 +88,22 @@ $app->post('/admin/house/add', function(Request $request) use($app){
  * Apartment Actions
  */
 $app->get('/admin/apartment/add', function() use($app){
-    $houses = $app['db']->fetchAll('SELECT h.id as id, h.name as name FROM house as h');
-
+    $houses = $app['model.house']->getList();
 	return $app->render('admin/apartment/add.twig',[
         'houses'    =>  $houses
     ]);
 })->bind('adminApartment.Add');
 
 $app->get('/admin/apartment', function() use($app){
-    $apartments = $app['db']->fetchAll('SELECT * FROM apartment');
+    $apartments = $app['model.apartment']->getAll();
 	return $app->render('admin/apartment/index.twig',[
         'apartments'    =>  $apartments
     ]);
 })->bind('adminApartment.Index');
 
 $app->get('admin/apartment/edit/{id}', function($id) use($app){
-    $apartment = $app['db']->fetchAssoc('SELECT * FROM apartment where id = :id', ['id'=>$id]);
-    $houses = $app['db']->fetchAll('SELECT h.id as id, h.name as name FROM house as h');
+    $apartment = $app['model.apartment']->get($id);
+    $houses = $app['model.house']->getList();
     return $app->render('admin/apartment/add.twig',[
         'apartment' =>  $apartment,
         'houses'    =>  $houses
@@ -114,37 +111,26 @@ $app->get('admin/apartment/edit/{id}', function($id) use($app){
 })->bind('adminApartment.Edit');
 
 $app->get('admin/apartment/remove/{id}', function($id) use($app){
-    $db =  $app['db'];
-    $db->delete('apartment', ['id' => $id]);
+    $app['model.apartment']->delete($id);
     return $app->redirect($app->url('adminApartment.Index'));
 })->bind('adminApartment.Remove');
 
 
 $app->post('admin/apartment/edit/{id}', function(Request $request, $id) use($app){
     $apartment = $request->get('apartment');
-    $db =  $app['db'];
-    $db->update('apartment', $apartment, ['id'=>$id]);
+    $app['model.apartment']->update($id, $apartment);
     return $app->redirect($app->url('adminApartment.Index'));
 })->bind('adminApartment.Save');
 
 $app->post('/admin/apartment/add', function(Request $request) use($app){
     $apartment = $request->get('apartment');
-    $db =  $app['db'];
-    $db->insert('apartment', $apartment);
+    $app['model.apartment']->insert($apartment);;
     return $app->redirect($app->url('adminApartment.Index'));
 })->bind('adminApartment.Create');
 
 /**
  * End Apartment Actions
  */
-
-
-
-
-
-
-
-
 
 /**
  * Snippet Actions

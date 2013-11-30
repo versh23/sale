@@ -57,3 +57,8 @@ $app['security.role_hierarchy'] = array(
 $app['security.access_rules'] = array(
     array('^/admin', 'ROLE_ADMIN'), // This url is available as anonymous user
 );
+
+
+//Register model
+$app['model.house'] = new \Sale\Model\HouseModel($app['db']);
+$app['model.apartment'] = new \Sale\Model\ApartmentModel($app['db']);
