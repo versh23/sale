@@ -7,9 +7,16 @@ use Symfony\Component\HttpFoundation\Response;
 
 require_once __DIR__.'/../vendor/autoload.php';
 
+/**
+ * @var CatalogApplication $app;
+ */
 $app = require __DIR__.'/../src/app.php';
 
 $app->before(function (Request $request) use($app) {
+
+    //Register model
+    $app['model.house'] = new \Sale\Model\HouseModel($app['db']);
+
 	$route = $request->get('_route');
 
 	if(preg_match('/admin(\w+)\./', $route, $matches)){
@@ -39,7 +46,7 @@ $app->get('/admin', function() use($app){
  */
 $app->get('/admin/house', function() use($app){
 
-    $houses = $app['db']->fetchAll('SELECT * FROM house');
+    $houses = $app['model.house']->getAll();
 
 	return $app->render('admin/house/index.twig',[
         'houses'    =>  $houses
@@ -51,30 +58,27 @@ $app->get('/admin/house/add', function() use($app){
 })->bind('adminHouse.Add');
 
 $app->get('admin/house/edit/{id}', function($id) use($app){
-    $house = $app['db']->fetchAssoc('SELECT * FROM house where id = :id', ['id'=>$id]);
+    $house = $app['model.house']->get($id);
     return $app->render('admin/house/add.twig',[
         'house' =>  $house
     ]);
 })->bind('adminHouse.Edit');
 
 $app->get('admin/house/remove/{id}', function($id) use($app){
-    $db =  $app['db'];
-    $db->delete('house', ['id' => $id]);
+    $app['model.house']->delete($id);
     return $app->redirect($app->url('adminHouse.Index'));
 })->bind('adminHouse.Remove');
 
 
 $app->post('admin/house/edit/{id}', function(Request $request, $id) use($app){
     $house = $request->get('house');
-    $db =  $app['db'];
-    $db->update('house', $house, ['id'=>$id]);
+    $app['model.house']->update($id, $house);
     return $app->redirect($app->url('adminHouse.Index'));
 })->bind('adminHouse.Save');
 
 $app->post('/admin/house/add', function(Request $request) use($app){
 	$house = $request->get('house');
-	$db =  $app['db'];
-	$db->insert('house', $house);
+    $app['model.house']->insert($house);
 	return $app->redirect($app->url('adminHouse.Index'));
 })->bind('adminHouse.Create');
 /**
