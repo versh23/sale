@@ -9,6 +9,8 @@ use Sale\ModelInterface;
 
 class HouseModel extends AbstractModel {
 
+    const MATERIAL_PANEL = 1, MATERIAL_BRICK = 2,TYPE_MONOLITH = 3;
+
     public function getTableSchema()
     {
         $schema = new Schema();

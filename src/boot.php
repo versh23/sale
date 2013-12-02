@@ -62,3 +62,4 @@ $app['security.access_rules'] = array(
 //Register model
 $app['model.house'] = new \Sale\Model\HouseModel($app['db']);
 $app['model.apartment'] = new \Sale\Model\ApartmentModel($app['db']);
+$app['model.snippet'] = new \Sale\Model\SnippetModel($app['db']);

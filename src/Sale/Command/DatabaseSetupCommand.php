@@ -69,29 +69,10 @@ class DatabaseSetupCommand extends Command{
         return $schemas;
     }
 
-    private function getClearTables(){
-
-        $tables = $this->getSchemas();
-
-        $schema = new Schema();
-
-        $snippetTable = $schema->createTable('snippet');
-        $snippetTable->addColumn('id', 'integer', array('autoincrement' => true));
-        $snippetTable->setPrimaryKey(array('id'));
-        $snippetTable->addColumn('label', 'string', array('length' => 32));
-        $snippetTable->addColumn('type', 'integer');
-        $snippetTable->addColumn('value', 'array');
-
-        $tables[] = $snippetTable;
-
-
-        return $tables;
-    }
-
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $currentTables = $this->getCurrentTables();
-        $targetTables = $this->getClearTables();
+        $targetTables = $this->getSchemas();
 
         $comparator = new Comparator();
 

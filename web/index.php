@@ -136,58 +136,50 @@ $app->post('/admin/apartment/add', function(Request $request) use($app){
  * Snippet Actions
  */
 $app->get('/admin/snippet/add', function() use($app){
-    $houses = $app['db']->fetchAll('SELECT h.id as id, h.name as name FROM house as h');
-
     return $app->render('admin/snippet/add.twig',[
-        'houses'    =>  $houses
     ]);
 })->bind('adminSnippet.Add');
 
 $app->get('/admin/snippet', function() use($app){
-    $snippets = $app['db']->fetchAll('SELECT * FROM snippet');
+    $snippets = $app['model.snippet']->getAll();
     return $app->render('admin/snippet/index.twig',[
         'snippets'    =>  $snippets
     ]);
 })->bind('adminSnippet.Index');
 
 $app->get('admin/snippet/edit/{id}', function($id) use($app){
-    $snippet = $app['db']->fetchAssoc('SELECT * FROM snippet where id = :id', ['id'=>$id]);
-    $snippet['value'] = $app['db']->convertToPHPValue($snippet['value'], TYPE::TARRAY);
+    $snippet = $app['model.snippet']->get($id);
     return $app->render('admin/snippet/add.twig',[
         'snippet' =>  $snippet,
     ]);
 })->bind('adminSnippet.Edit');
 
 $app->get('admin/snippet/remove/{id}', function($id) use($app){
-    $db =  $app['db'];
-    $db->delete('snippet', ['id' => $id]);
+    $app['model.snippet']->delete($id);
     return $app->redirect($app->url('adminSnippet.Index'));
 })->bind('adminSnippet.Remove');
 
 
 $app->post('admin/snippet/edit/{id}', function(Request $request, $id) use($app){
     $snippet = $request->get('snippet');
-    $values = explode(',',$snippet['value']);
-    $value = [];
-    if(count($values)){
-        foreach($values as $v){
-            $value[] = trim($v);
-        }
-    }else{
-        $value[] = $values;
-    }
-    $snippet['value'] = $value;
-    /**
-     * @var Connection $db
-     */
-    $db =  $app['db'];
-    $db->update('snippet', $snippet, ['id'=>$id], [3 => Type::TARRAY]);
+    prepareSnippet($snippet);
+
+    $app['model.snippet']->update($id, $snippet);
     return $app->redirect($app->url('adminSnippet.Index'));
 })->bind('adminSnippet.Save');
 
 $app->post('/admin/snippet/add', function(Request $request) use($app){
     $snippet = $request->get('snippet');
-    $values = explode(',',$snippet['value']);
+    prepareSnippet($snippet);
+
+    $app['model.snippet']->insert($snippet);
+    return $app->redirect($app->url('adminSnippet.Index'));
+})->bind('adminSnippet.Create');
+
+
+//@TODO in snippet controller
+function prepareSnippet(&$snippet){
+    $values = explode(',',$snippet['val']);
     $value = [];
     if(count($values)){
         foreach($values as $v){
@@ -196,14 +188,10 @@ $app->post('/admin/snippet/add', function(Request $request) use($app){
     }else{
         $value[] = $values;
     }
-    $snippet['value'] = $value;
-    /**
-     * @var Connection $db
-     */
-    $db =  $app['db'];
-    $db->insert('snippet', $snippet, [3 => Type::TARRAY]);
-    return $app->redirect($app->url('adminSnippet.Index'));
-})->bind('adminSnippet.Create');
+    $snippet['val'] = $value;
+
+    return $snippet;
+}
 
 /**
  * End Snippet Actions
