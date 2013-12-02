@@ -60,9 +60,17 @@ class DatabaseSetupCommand extends Command{
     private function getSchemas(){
         $schemas = [];
         foreach($this->keys as $key){
-            if(preg_match('/model\.(\S+)/', $key, $matches)){
+            if(preg_match('/model\.(\S+)/', $key)){
                 if($this->app[$key] instanceof AbstractModel){
-                    $schemas[$matches[1]] = $this->app[$key]->getTableSchema();
+                    $tmpSchemas = $this->app[$key]->getTableSchema();
+                    if(is_array($tmpSchemas)){
+                        foreach($tmpSchemas as $s){
+                            //@TODO maybe array merge?
+                            $schemas[] = $s;
+                        }
+                    }else{
+                        $schemas[] = $tmpSchemas;
+                    }
                 }
             }
         }

@@ -2,6 +2,7 @@
 
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Types\Type;
+use Sale\Model\SnippetModel;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -52,7 +53,10 @@ $app->get('/admin/house', function() use($app){
 })->bind('adminHouse.Index');
 
 $app->get('/admin/house/add', function() use($app){
-	return $app->render('admin/house/add.twig',[]);
+    $snippets = $app['model.snippet']->getForType(SnippetModel::TO_HOUSE);
+	return $app->render('admin/house/add.twig',[
+        'snippets'  =>  $snippets
+    ]);
 })->bind('adminHouse.Add');
 
 $app->get('admin/house/edit/{id}', function($id) use($app){

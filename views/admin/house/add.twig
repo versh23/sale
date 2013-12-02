@@ -63,13 +63,20 @@
                 <div class="panel-heading">Дополнительные признаки
                 </div>
                 <div class="panel-body">
+                    {% for item in snippets %}
                     <div class="form-group">
-                        <label class="control-label">Есть ли там то то</label>
+                        <label class="control-label">{{ item.label }}</label>
 
                         <div class="controls">
-                            <input type="text" class="form-control">
+                            {% if item.type == 2 %}
+
+                                {% for val in item.val %}
+                                    <input type="checkbox"/> {{ val }}
+                                {% endfor %}
+                            {% endif %}
                         </div>
                     </div>
+                    {% endfor %}
                 </div>
             </div>
             <button class="btn pull-right btn-success">{{ text }}</button>

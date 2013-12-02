@@ -10,6 +10,12 @@ use Sale\ModelInterface;
 
 class SnippetModel extends AbstractModel {
 
+//      SELECT object_id, h.*
+//      FROM `snippet_value_match`
+//      join house as h on h.id = object_id
+//      WHERE `sysname` = 'structure' AND `sysval` IN ('sadik')
+
+
     const TYPE_SINGLE = 1, TYPE_MULTI = 2;
 
     const TO_HOUSE = 1, TO_APARTMENT = 2;
@@ -23,10 +29,30 @@ class SnippetModel extends AbstractModel {
         $snippetTable->setPrimaryKey(array('id'));
         $snippetTable->addColumn('label', 'string', array('length' => 32));
         $snippetTable->addColumn('type', 'integer');
-        $snippetTable->addColumn('val', 'array');
+        $snippetTable->addColumn('sysname', 'string', array('length' => 20));
         $snippetTable->addColumn('to_object', 'integer');
 
-        return $snippetTable;
+        $snippetValueTable = $schema->createTable('snippet_value');
+        $snippetValueTable->addColumn('id', 'integer', array('autoincrement' => true));
+        $snippetValueTable->setPrimaryKey(array('id'));
+        $snippetValueTable->addColumn('snippet_id', 'integer');
+        $snippetValueTable->addForeignKeyConstraint('snippet', ['snippet_id'], ['id'], ['onDelete'=>'CASCADE']);
+        $snippetValueTable->addColumn('name', 'string', array('length' => 32));
+        $snippetValueTable->addColumn('sysval', 'string', array('length' => 16));
+
+        $snippetValueMatchTable = $schema->createTable('snippet_value_match');
+        $snippetValueMatchTable->addColumn('id', 'integer', array('autoincrement' => true));
+        $snippetValueMatchTable->setPrimaryKey(array('id'));
+        $snippetValueMatchTable->addColumn('object_id', 'integer');
+        $snippetValueMatchTable->addColumn('object_type', 'integer');
+        $snippetValueMatchTable->addColumn('snippet_value_id', 'integer');
+        $snippetValueMatchTable->addForeignKeyConstraint('snippet_value', ['snippet_value_id'], ['id'], ['onDelete'=>'CASCADE']);
+        //Денормализация
+        $snippetValueMatchTable->addColumn('sysval', 'string', array('length' => 16));
+        $snippetValueMatchTable->addColumn('sysname', 'string', array('length' => 20));
+
+        return [$snippetTable, $snippetValueTable, $snippetValueMatchTable];
+
     }
 
     public function getTable()
@@ -34,21 +60,11 @@ class SnippetModel extends AbstractModel {
         return 'snippet';
     }
 
-    public function get($id){
-        $res = $this->db->fetchAssoc('SELECT * FROM ' . $this->getTable() . ' where id = :id', ['id'=>$id]);
-        if($res){
-            $res['val'] = $this->db->convertToPHPValue($res['val'], TYPE::TARRAY);
-        }
-        return $res;
+    public function getForType($id){
+        return $this->db->fetchAll('SELECT * FROM ' . $this->getTable() . ' where to_object = :to_object', ['to_object'=>$id]);
+
     }
 
-    public function update($id, $data){
-        return $this->db->update($this->getTable(), $data, ['id'=>$id], [4 => Type::TARRAY]);
-    }
-
-    public function insert($data){
-        return $this->db->insert($this->getTable(), $data, [4 => Type::TARRAY]);
-    }
 
 
 }
