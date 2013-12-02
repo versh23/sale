@@ -55,6 +55,82 @@ class SnippetModel extends AbstractModel {
 
     }
 
+    public function get($id){
+        $res = parent::get($id);
+        $values = $this->db->fetchAll('select * from snippet_value where snippet_id = :sid', ['sid'=>$res['id']]);
+
+        foreach($values as $val){
+            $res['values'][] = $val;
+        }
+
+        return $res;
+    }
+
+
+    public function insert($snippet, $snippet_value){
+
+        parent::insert($snippet);
+        $names = $snippet_value['name'];
+        $sysvals = $snippet_value['sysval'];
+        foreach($names as $index => $value){
+            if(trim($value) !== ''){
+                $values[] = [
+                    'snippet_id'    =>  $this->db->lastInsertId(),
+                    'name'          =>  trim($value),
+                    'sysval'        =>  trim($sysvals[$index]),
+                ];
+            }
+        }
+        foreach($values as $data){
+            $this->db->insert('snippet_value', $data);
+        }
+
+        return true;
+    }
+
+    public function update($id, $snippet, $snippet_value){
+        $original = $this->get($id);
+
+        parent::update($id, $snippet);
+        $names = $snippet_value['name'];
+        $sysvals = $snippet_value['sysval'];
+        $ids = $snippet_value['_id'];
+        foreach($original['values'] as $value){
+            if(!in_array($value['id'], $ids)){
+                $deleted[] = $value['id'];
+            }
+        }
+        foreach($names as $index => $value){
+            if(trim($value) !== '' ){
+                if($ids[$index] == ''){
+                    $inserts[] = [
+                        'name'          =>  trim($value),
+                        'sysval'        =>  trim($sysvals[$index]),
+                        'snippet_id'    =>  $id
+                    ];
+                }else{
+                    $values[] = [
+                        'name'          =>  trim($value),
+                        'sysval'        =>  trim($sysvals[$index]),
+                    ];
+                }
+
+            }
+        }
+        foreach($values as $index=>$data){
+            $this->db->update('snippet_value', $data, ['id'=>$ids[$index]]);
+        }
+        foreach($inserts as $insert){
+            $this->db->insert('snippet_value', $insert);
+        }
+
+        foreach($deleted as $delete){
+            $this->db->delete('snippet_value', ['id'=>$delete]);
+        }
+
+        return true;
+    }
+
     public function getTable()
     {
         return 'snippet';

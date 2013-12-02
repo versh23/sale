@@ -26,22 +26,60 @@
                 <label class="control-label">Тип признака</label>
 
                 <div class="controls">
-                    <select class="form-control" name="snippet[type]">
+                    <select class="form-control" name="snippet[type]" id="snippet_type">
                         <option {% if snippet.type == 1 %} selected {% endif %} value="1">Одиночный</option>
                         <option {% if snippet.type == 2 %} selected {% endif %} value="2">Множественный</option>
                     </select>
                 </div>
             </div>
-
             <div class="form-group">
-                <label class="control-label">Значения признака</label>
+                <label class="control-label">Системное имя</label>
 
                 <div class="controls">
-                    <input type="text" class="form-control" name="snippet[val]" value="{{ snippet.val|join(', ') }}">
+                    <input type="text" class="form-control" name="snippet[sysname]" value="{{ snippet.sysname }}">
                 </div>
             </div>
-
+            <div id="wrapper" {% if not snippet.values|length or snippet.type == 1 %}style="display: none;"{% endif %}>
+                {% for val in snippet.values %}
+                    {% include 'admin/snippet/value.twig' with {last: loop.last} %}
+                {% else %}
+                    {% include 'admin/snippet/value.twig'  with {empty: true}%}
+                {% endfor %}
+            </div>
             <button class="btn pull-right btn-success">{{ text }}</button>
         </form>
     </div>
-{% endblock %}  
+{% endblock %}
+{% block js %}
+{{ parent() }}
+
+    <script>
+        $(function(){
+            $('#snippet_type').change(function(){
+                if($(this).val() == 2){
+                    $('#wrapper').show();
+                }else{
+                    $('#wrapper').hide();
+                }
+            });
+
+
+            $('#wrapper').on('click', '.remove-value', function(){
+                $(this).parent().parent().remove();
+            });
+
+            $('#wrapper').on('click', '.add-value', function(){
+                $tmpl = $('#wrapper .row:first').clone();
+                $tmpl.find('input').each(function(){
+                    $(this).val('');
+                });
+                $tmpl.find('.add-value').show().css('display', 'inline-block');
+                $tmpl.find('.remove-value').hide();
+                $(this).hide().next().show();
+
+                $tmpl.appendTo('#wrapper');
+                console.log($tmpl);
+            });
+        })
+    </script>
+{% endblock %}

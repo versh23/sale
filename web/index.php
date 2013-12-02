@@ -166,36 +166,27 @@ $app->get('admin/snippet/remove/{id}', function($id) use($app){
 
 $app->post('admin/snippet/edit/{id}', function(Request $request, $id) use($app){
     $snippet = $request->get('snippet');
-    prepareSnippet($snippet);
+    $snippet_value = $request->get('snippet_value');
 
-    $app['model.snippet']->update($id, $snippet);
+    $app['model.snippet']->update($id, $snippet, $snippet_value);
     return $app->redirect($app->url('adminSnippet.Index'));
 })->bind('adminSnippet.Save');
 
 $app->post('/admin/snippet/add', function(Request $request) use($app){
     $snippet = $request->get('snippet');
-    prepareSnippet($snippet);
+    if($snippet['type'] == SnippetModel::TYPE_SINGLE){
+        $snippet_value = [
+            'name'  =>  [$snippet['label']],
+            'sysval'  =>  [1],
+        ];
+    }else{
+        $snippet_value = $request->get('snippet_value');
+    }
 
-    $app['model.snippet']->insert($snippet);
+    $app['model.snippet']->insert($snippet, $snippet_value);
     return $app->redirect($app->url('adminSnippet.Index'));
 })->bind('adminSnippet.Create');
 
-
-//@TODO in snippet controller
-function prepareSnippet(&$snippet){
-    $values = explode(',',$snippet['val']);
-    $value = [];
-    if(count($values)){
-        foreach($values as $v){
-            $value[] = trim($v);
-        }
-    }else{
-        $value[] = $values;
-    }
-    $snippet['val'] = $value;
-
-    return $snippet;
-}
 
 /**
  * End Snippet Actions
