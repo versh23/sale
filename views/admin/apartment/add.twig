@@ -1,4 +1,5 @@
 {% extends 'admin/layout.twig' %}
+{% import "admin/snippet/macro.twig" as _snippets %}
 {% block title %} Админка | Квартиры {% endblock %}
 {% block content %}
     {% set url = (apartment.id) ? path('adminApartment.Save', {id: apartment.id}) : path('adminApartment.Create') %}
@@ -44,12 +45,7 @@
               <div class="panel-heading">Дополнительные признаки
               </div>
               <div class="panel-body">
-                <div class="form-group">
-                  <label class="control-label">Есть ли там то то</label>
-                  <div class="controls">
-                    <input type="text" class="form-control">
-                  </div>
-                </div>
+                    {{ _snippets.draw(snippets) }}
               </div>
             </div>
             <button class="btn pull-right btn-success">{{ text }}</button>

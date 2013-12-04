@@ -4,16 +4,9 @@ namespace Sale\Model;
 
 
 use Doctrine\DBAL\Schema\Schema;
-use Sale\ModelInterface;
 
 class SnippetModel extends AbstractModel
 {
-
-//      SELECT object_id, h.*
-//      FROM `snippet_value_match`
-//      join house as h on h.id = object_id
-//      WHERE `sysname` = 'structure' AND `sysval` IN ('sadik')
-
 
     const TYPE_SINGLE = 1, TYPE_MULTI = 2;
 
@@ -60,7 +53,6 @@ class SnippetModel extends AbstractModel
         return $res;
     }
 
-    //@TODO переписать под where in
     private function getValues($id)
     {
         return $this->db->fetchAll('select * from snippet_value where snippet_id = :sid', ['sid' => $id]);

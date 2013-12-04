@@ -2,6 +2,7 @@
 
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Types\Type;
+use Sale\Model\ApartmentModel;
 use Sale\Model\HouseModel;
 use Sale\Model\SnippetModel;
 use Symfony\Component\HttpFoundation\Request;
@@ -104,8 +105,10 @@ $app->post('/admin/house/add', function (Request $request) use ($app) {
  */
 $app->get('/admin/apartment/add', function () use ($app) {
     $houses = $app['model.house']->getList();
+    $snippets = $app['model.snippet']->getForType(ApartmentModel::OBJECT_TYPE);
     return $app->render('admin/apartment/add.twig', [
-        'houses' => $houses
+        'houses' => $houses,
+        'snippets' => $snippets,
     ]);
 })->bind('adminApartment.Add');
 
@@ -117,29 +120,41 @@ $app->get('/admin/apartment', function () use ($app) {
 })->bind('adminApartment.Index');
 
 $app->get('admin/apartment/edit/{id}', function ($id) use ($app) {
-    $apartment = $app['model.apartment']->get($id);
+    $apartment = $app['model.apartment']->getWithSnippets($id);
     $houses = $app['model.house']->getList();
+    $snippets = $app['model.snippet']->getForType(ApartmentModel::OBJECT_TYPE);
+    $checkedSnippets = $app['model.snippet']->getChecked($apartment);
     return $app->render('admin/apartment/add.twig', [
         'apartment' => $apartment,
-        'houses' => $houses
+        'houses' => $houses,
+        'snippets' => $snippets,
+        'checked' => $checkedSnippets,
     ]);
 })->bind('adminApartment.Edit');
 
 $app->get('admin/apartment/remove/{id}', function ($id) use ($app) {
     $app['model.apartment']->delete($id);
+    $app['model.snippet']->clear($id, ApartmentModel::OBJECT_TYPE);
+
     return $app->redirect($app->url('adminApartment.Index'));
 })->bind('adminApartment.Remove');
 
 
 $app->post('admin/apartment/edit/{id}', function (Request $request, $id) use ($app) {
     $apartment = $request->get('apartment');
+    $snippets = $request->get('snippet');
     $app['model.apartment']->update($id, $apartment);
+    $app['model.apartment']->updateSnippets($id, $snippets);
     return $app->redirect($app->url('adminApartment.Index'));
 })->bind('adminApartment.Save');
 
 $app->post('/admin/apartment/add', function (Request $request) use ($app) {
     $apartment = $request->get('apartment');
-    $app['model.apartment']->insert($apartment);;
+    $id = $app['model.apartment']->insert($apartment);;
+
+    $snippets = $request->get('snippet');
+    $app['model.apartment']->addSnippet($snippets, $id);
+
     return $app->redirect($app->url('adminApartment.Index'));
 })->bind('adminApartment.Create');
 

@@ -9,6 +9,9 @@ use Sale\ModelInterface;
 
 class ApartmentModel extends AbstractModel
 {
+    const OBJECT_TYPE = 2;
+
+    use SnippetTrait;
 
     public function getTableSchema()
     {

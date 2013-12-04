@@ -1,0 +1,24 @@
+{% macro draw(snippets) %}
+    {% for item in snippets %}
+        <div class="form-group b-snippets">
+            <label class="control-label">{{ item.label }}</label>
+            <div class="controls">
+                {% for val in item.values %}
+                    {% if item.type == 1 %}
+                        <div class="radio">
+                            <label>
+                                <input {% if val.sysval in checked[item.sysname] %} checked {% endif %} {% if loop.first and not checked %}checked{% endif %} name="snippet[{{ item.sysname }}]" value="{{ val.sysval }}__{{ val.id }}" type="radio">{{ val.name }}
+                            </label>
+                        </div>
+                    {% else %}
+                        <div class="checkbox">
+                            <label>
+                                <input {% if val.sysval in checked[item.sysname] %} checked {% endif %} type="checkbox" name="snippet[{{ item.sysname }}][]" value="{{ val.sysval }}__{{ val.id }}"> {{ val.name }}
+                            </label>
+                        </div>
+                    {% endif %}
+                {% endfor %}
+            </div>
+        </div>
+    {% endfor %}
+{% endmacro %}
