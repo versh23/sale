@@ -1,5 +1,5 @@
 {% extends 'admin/layout.twig' %}
-
+{% block title %} Админка | Дома {% endblock %}
 {% block content %}
     {% set url = (house.id) ? path('adminHouse.Save', {id: house.id}) : path('adminHouse.Create') %}
     {% set text = (house.id) ? 'Сохранить' : 'Добавить' %}
@@ -71,13 +71,13 @@
                                 {% if item.type == 1 %}
                                 <div class="radio">
                                     <label>
-                                        <input {% if loop.first %}checked{% endif %} name="snippet[{{ item.sysname }}]" value="{{ val.sysval }}__{{ val.id }}" type="radio">{{ val.name }}
+                                        <input {% if val.sysval in checked[item.sysname] %} checked {% endif %} {% if loop.first and not checked %}checked{% endif %} name="snippet[{{ item.sysname }}]" value="{{ val.sysval }}__{{ val.id }}" type="radio">{{ val.name }}
                                     </label>
                                 </div>
                                 {% else %}
                                     <div class="checkbox">
                                         <label>
-                                            <input type="checkbox" name="snippet[{{ item.sysname }}][]" value="{{ val.sysval }}__{{ val.id }}"> {{ val.name }}
+                                            <input {% if val.sysval in checked[item.sysname] %} checked {% endif %} type="checkbox" name="snippet[{{ item.sysname }}][]" value="{{ val.sysval }}__{{ val.id }}"> {{ val.name }}
                                         </label>
                                     </div>
                                 {% endif %}

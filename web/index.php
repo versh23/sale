@@ -2,6 +2,7 @@
 
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Types\Type;
+use Sale\Model\HouseModel;
 use Sale\Model\SnippetModel;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -53,22 +54,26 @@ $app->get('/admin/house', function() use($app){
 })->bind('adminHouse.Index');
 
 $app->get('/admin/house/add', function() use($app){
-    $snippets = $app['model.snippet']->getForType(SnippetModel::TO_HOUSE);
+    $snippets = $app['model.snippet']->getForType(HouseModel::OBJECT_TYPE);
 	return $app->render('admin/house/add.twig',[
         'snippets'  =>  $snippets
     ]);
 })->bind('adminHouse.Add');
 
 $app->get('admin/house/edit/{id}', function($id) use($app){
-    $house = $app['model.house']->get($id);
+    $house = $app['model.house']->getWithSnippets($id);
+    $snippets = $app['model.snippet']->getForType(HouseModel::OBJECT_TYPE);
+    $checkedSnippets = $app['model.snippet']->getChecked($house);
     return $app->render('admin/house/add.twig',[
-        'house' =>  $house
+        'house' =>  $house,
+        'snippets'  =>  $snippets,
+        'checked'   =>  $checkedSnippets
     ]);
 })->bind('adminHouse.Edit');
 
 $app->get('admin/house/remove/{id}', function($id) use($app){
     $app['model.house']->delete($id);
-    $app['model.snippet']->clear($id,SnippetModel::TO_HOUSE);
+    $app['model.snippet']->clear($id, HouseModel::OBJECT_TYPE);
     return $app->redirect($app->url('adminHouse.Index'));
 })->bind('adminHouse.Remove');
 

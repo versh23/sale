@@ -3,9 +3,7 @@
 namespace Sale\Model;
 
 
-use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Schema\Schema;
-use Doctrine\DBAL\Types\Type;
 use Sale\ModelInterface;
 
 class SnippetModel extends AbstractModel {
@@ -17,8 +15,6 @@ class SnippetModel extends AbstractModel {
 
 
     const TYPE_SINGLE = 1, TYPE_MULTI = 2;
-
-    const TO_HOUSE = 1, TO_APARTMENT = 2;
 
     public function getTableSchema()
     {
@@ -158,5 +154,13 @@ class SnippetModel extends AbstractModel {
        return  $this->db->delete('snippet_value_match', ['object_id'=>$id, 'object_type'=>$type]);
     }
 
-
+    public function getChecked($object){
+        $checkedSnippets = [];
+        if(isset($object['snippets'])){
+            foreach($object['snippets'] as $sn){
+                $checkedSnippets[$sn['sysname']][] =$sn['sysval'];
+            }
+        }
+        return $checkedSnippets;
+    }
 }

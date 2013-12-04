@@ -1,5 +1,5 @@
 {% extends 'admin/layout.twig' %}
-
+{% block title %} Админка | Сниппеты {% endblock %}
 {% block content %}
     {% set url = (snippet.id) ? path('adminSnippet.Save', {id: snippet.id}) : path('adminSnippet.Create') %}
     {% set text = (snippet.id) ? 'Сохранить' : 'Добавить' %}

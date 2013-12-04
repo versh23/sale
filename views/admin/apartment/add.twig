@@ -1,5 +1,5 @@
 {% extends 'admin/layout.twig' %}
-
+{% block title %} Админка | Квартиры {% endblock %}
 {% block content %}
     {% set url = (apartment.id) ? path('adminApartment.Save', {id: apartment.id}) : path('adminApartment.Create') %}
     {% set text = (apartment.id) ? 'Сохранить' : 'Добавить' %}
