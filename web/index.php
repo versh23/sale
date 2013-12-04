@@ -80,7 +80,9 @@ $app->get('admin/house/remove/{id}', function($id) use($app){
 
 $app->post('admin/house/edit/{id}', function(Request $request, $id) use($app){
     $house = $request->get('house');
+    $snippets = $request->get('snippet');
     $app['model.house']->update($id, $house);
+    $app['model.house']->updateSnippets($id, $snippets);
     return $app->redirect($app->url('adminHouse.Index'));
 })->bind('adminHouse.Save');
 
