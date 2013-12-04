@@ -57,15 +57,22 @@ class SnippetModel extends AbstractModel {
 
     public function get($id){
         $res = parent::get($id);
-        $values = $this->db->fetchAll('select * from snippet_value where snippet_id = :sid', ['sid'=>$res['id']]);
-
-        foreach($values as $val){
-            $res['values'][] = $val;
-        }
+        $this->mergeValues($res);
 
         return $res;
     }
 
+    //@TODO переписать под where in
+    private function getValues($id){
+        return $this->db->fetchAll('select * from snippet_value where snippet_id = :sid', ['sid'=>$id]);
+    }
+
+    private function mergeValues(&$snippet){
+        $values = $this->getValues($snippet['id']);
+        foreach($values as $val){
+            $snippet['values'][] = $val;
+        }
+    }
 
     public function insert($snippet, $snippet_value){
 
@@ -137,10 +144,19 @@ class SnippetModel extends AbstractModel {
     }
 
     public function getForType($id){
-        return $this->db->fetchAll('SELECT * FROM ' . $this->getTable() . ' where to_object = :to_object', ['to_object'=>$id]);
+        $snippets =  $this->db->fetchAll('SELECT * FROM ' . $this->getTable() . ' where to_object = :to_object', ['to_object'=>$id]);
 
+        foreach($snippets as &$snippet){
+            $this->mergeValues($snippet);
+        }
+
+        return $snippets;
     }
 
+
+    public function clear($id, $type){
+       return  $this->db->delete('snippet_value_match', ['object_id'=>$id, 'object_type'=>$type]);
+    }
 
 
 }

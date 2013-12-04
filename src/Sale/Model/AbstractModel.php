@@ -40,6 +40,8 @@ abstract class AbstractModel {
 
     public function insert($data)
     {
-        return $this->db->insert($this->getTable(), $data);
+        $this->db->insert($this->getTable(), $data);
+
+        return $this->db->lastInsertId();
     }
 }

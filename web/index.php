@@ -68,6 +68,7 @@ $app->get('admin/house/edit/{id}', function($id) use($app){
 
 $app->get('admin/house/remove/{id}', function($id) use($app){
     $app['model.house']->delete($id);
+    $app['model.snippet']->clear($id,SnippetModel::TO_HOUSE);
     return $app->redirect($app->url('adminHouse.Index'));
 })->bind('adminHouse.Remove');
 
@@ -80,7 +81,10 @@ $app->post('admin/house/edit/{id}', function(Request $request, $id) use($app){
 
 $app->post('/admin/house/add', function(Request $request) use($app){
 	$house = $request->get('house');
-    $app['model.house']->insert($house);
+    $snippets = $request->get('snippet');
+    $id = $app['model.house']->insert($house);
+    $app['model.house']->addSnippet($snippets, $id);
+
 	return $app->redirect($app->url('adminHouse.Index'));
 })->bind('adminHouse.Create');
 /**
@@ -176,8 +180,8 @@ $app->post('/admin/snippet/add', function(Request $request) use($app){
     $snippet = $request->get('snippet');
     if($snippet['type'] == SnippetModel::TYPE_SINGLE){
         $snippet_value = [
-            'name'  =>  [$snippet['label']],
-            'sysval'  =>  [1],
+            'name'  =>  ['Да', 'Нет'],
+            'sysval'  =>  [1, 0],
         ];
     }else{
         $snippet_value = $request->get('snippet_value');

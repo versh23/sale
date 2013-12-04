@@ -64,16 +64,24 @@
                 </div>
                 <div class="panel-body">
                     {% for item in snippets %}
-                    <div class="form-group">
+                    <div class="form-group b-snippets">
                         <label class="control-label">{{ item.label }}</label>
-
                         <div class="controls">
-                            {% if item.type == 2 %}
-
-                                {% for val in item.val %}
-                                    <input type="checkbox"/> {{ val }}
-                                {% endfor %}
-                            {% endif %}
+                            {% for val in item.values %}
+                                {% if item.type == 1 %}
+                                <div class="radio">
+                                    <label>
+                                        <input {% if loop.first %}checked{% endif %} name="snippet[{{ item.sysname }}]" value="{{ val.sysval }}__{{ val.id }}" type="radio">{{ val.name }}
+                                    </label>
+                                </div>
+                                {% else %}
+                                    <div class="checkbox">
+                                        <label>
+                                            <input type="checkbox" name="snippet[{{ item.sysname }}][]" value="{{ val.sysval }}__{{ val.id }}"> {{ val.name }}
+                                        </label>
+                                    </div>
+                                {% endif %}
+                            {% endfor %}
                         </div>
                     </div>
                     {% endfor %}
