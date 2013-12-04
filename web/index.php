@@ -3,6 +3,7 @@
 use Sale\Controller\ApartmentController;
 use Sale\Controller\HouseController;
 use Sale\Controller\SnippetController;
+use Sale\Controller\UploadController;
 use Symfony\Component\HttpFoundation\Request;
 
 require_once __DIR__ . '/../vendor/autoload.php';
@@ -47,5 +48,6 @@ $app->get('/admin', function () use ($app) {
 $app->mount('/admin/house', new HouseController());
 $app->mount('/admin/apartment', new ApartmentController());
 $app->mount('/admin/snippet', new SnippetController());
+$app->mount('/upload', new UploadController());
 
 $app->run();

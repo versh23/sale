@@ -40,7 +40,7 @@ trait SnippetTrait
             foreach ($dirtySysval as $ds) {
                 list($sysval, $snippet_value_id) = $this->info($ds);
                 $normalNewSnippets[$sysname]['values'][] = $sysval;
-                $normalNewSnippets[$sysname]['map_valueId'] = [$sysval => $snippet_value_id];
+                $normalNewSnippets[$sysname]['map_valueId'][$sysval] = $snippet_value_id;
                 $normalNewSnippets[$sysname]['type'] = $type;
             }
         }
@@ -98,19 +98,21 @@ trait SnippetTrait
 
         //Тут по идее остались только норвые
         foreach ($normalNewSnippets as $sysname => $data) {
-            $insertValues = [];
+            if(count($data['values'])){
+                $insertValues = [];
+                foreach ($data['values'] as $v) {
+                    $insertValues[] = $v . '__' . $data['map_valueId'][$v];
+                }
 
-            foreach ($data['values'] as $v) {
-                $insertValues[] = $v . '__' . $data['map_valueId'][$v];
+                $insertes[] = [
+                    $sysname => $insertValues
+                ];
             }
-
-            $insertes = [
-                $sysname => $insertValues
-            ];
-
+        }
+        foreach($insertes as $ins){
+            $this->addSnippet($ins, $objectId);
         }
 
-        $this->addSnippet($insertes, $objectId);
 
         foreach ($updates as $up) {
             $this->db->update('snippet_value_match', $up['data'], $up['where']);
