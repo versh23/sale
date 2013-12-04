@@ -7,7 +7,8 @@ use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Schema\Schema;
 use Sale\ModelInterface;
 
-class ApartmentModel extends AbstractModel {
+class ApartmentModel extends AbstractModel
+{
 
     public function getTableSchema()
     {
@@ -18,7 +19,7 @@ class ApartmentModel extends AbstractModel {
         $apartmentTable->setPrimaryKey(array('id'));
         $apartmentTable->addColumn('house_id', 'integer');
         //@TODO получить название таблицы другим способом?
-        $apartmentTable->addForeignKeyConstraint('house', ['house_id'], ['id'], ['onDelete'=>'CASCADE']);
+        $apartmentTable->addForeignKeyConstraint('house', ['house_id'], ['id'], ['onDelete' => 'CASCADE']);
         $apartmentTable->addColumn('cnt_room', 'integer');
         $apartmentTable->addColumn('square', 'integer');
 

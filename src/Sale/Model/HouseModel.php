@@ -6,11 +6,12 @@ namespace Sale\Model;
 use Doctrine\DBAL\Schema\Schema;
 use Sale\ModelInterface;
 
-class HouseModel extends AbstractModel {
+class HouseModel extends AbstractModel
+{
 
     use SnippetTrait;
 
-    const MATERIAL_PANEL = 1, MATERIAL_BRICK = 2,TYPE_MONOLITH = 3;
+    const MATERIAL_PANEL = 1, MATERIAL_BRICK = 2, TYPE_MONOLITH = 3;
     const OBJECT_TYPE = 1;
 
     public function getTableSchema()
@@ -34,7 +35,8 @@ class HouseModel extends AbstractModel {
         return 'house';
     }
 
-    public function getList(){
+    public function getList()
+    {
         return $this->db->fetchAll('SELECT h.id as id, h.name as name FROM ' . $this->getTable() . ' as h');
     }
 
