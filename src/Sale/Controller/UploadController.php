@@ -19,7 +19,9 @@ class UploadController implements ControllerProviderInterface
         // creates a new controller based on the default route
         $controllers = $app['controllers_factory'];
 
-        $controllers->post('/', function () use ($app) {
+        $controllers->post('/', function (Request $request) use ($app) {
+
+            var_dump($request->files->all());die;
 
         })->bind('upload.Do');
 

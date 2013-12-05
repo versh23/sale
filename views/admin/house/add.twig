@@ -1,6 +1,10 @@
 {% extends 'admin/layout.twig' %}
 {% import "admin/snippet/macro.twig" as _snippets %}
 {% block title %} Админка | Дома {% endblock %}
+{% block css %}
+{{ parent() }}
+    <link rel="stylesheet" href="/css/jquery.fileupload.css">
+{% endblock %}
 {% block content %}
     {% set url = (house.id) ? path('adminHouse.Save', {id: house.id}) : path('adminHouse.Create') %}
     {% set text = (house.id) ? 'Сохранить' : 'Добавить' %}
@@ -49,15 +53,21 @@
                 <label class="control-label">Фотоальбом типа</label>
 
                 <div class="controls">
-                    <button class="btn btn-primary">Выбрать файлы</button>
-                    <span class="help-block">Первая фотка будет как главная</span>
-
-                    <div>
-                        <img src="https://app.divshot.com/img/placeholder-100x100.gif">
-                        <img src="https://app.divshot.com/img/placeholder-100x100.gif">
-                        <img src="https://app.divshot.com/img/placeholder-100x100.gif">
-                        <img src="https://app.divshot.com/img/placeholder-100x100.gif">
+                    <!-- The fileinput-button span is used to style the file input field as button -->
+                    <span class="btn btn-success fileinput-button">
+                        <i class="glyphicon glyphicon-plus"></i>
+                        <span>Добавить файлы</span>
+                        <!-- The file input field used as target for the file upload widget -->
+                        <input id="fileupload" type="file" name="files[]" multiple>
+                    </span>
+                    <br>
+                    <br>
+                    <!-- The global progress bar -->
+                    <div id="progress" class="progress">
+                        <div class="progress-bar progress-bar-success"></div>
                     </div>
+                    <!-- The container for the uploaded files -->
+                    <div id="files" class="files"></div>
                 </div>
             </div>
             <div class="panel panel-default">
@@ -70,4 +80,35 @@
             <button class="btn pull-right btn-success">{{ text }}</button>
         </form>
     </div>
-{% endblock %}  
+{% endblock %}
+{% block js %}
+{{ parent() }}
+    <script type="text/javascript" src="/js/jquery.ui.widget.js"></script>
+    <script type="text/javascript" src="/js/jquery.iframe-transport.js"></script>
+    <script type="text/javascript" src="/js/jquery.fileupload.js"></script>
+
+    <script>
+
+        $(function () {
+            'use strict';
+            var url = '{{ path('upload.Do') }}';
+            $('#fileupload').fileupload({
+                url: url,
+                dataType: 'json',
+                done: function (e, data) {
+                    $.each(data.result.files, function (index, file) {
+                        $('<p/>').text(file.name).appendTo('#files');
+                    });
+                },
+                progressall: function (e, data) {
+                    var progress = parseInt(data.loaded / data.total * 100, 10);
+                    $('#progress .progress-bar').css(
+                            'width',
+                            progress + '%'
+                    );
+                }
+            }).prop('disabled', !$.support.fileInput)
+                    .parent().addClass($.support.fileInput ? undefined : 'disabled');
+        });
+    </script>
+{% endblock %}
