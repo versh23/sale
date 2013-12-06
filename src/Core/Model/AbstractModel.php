@@ -1,6 +1,6 @@
 <?php
 
-namespace Sale\Model;
+namespace Core\Model;
 
 
 use Doctrine\DBAL\Connection;

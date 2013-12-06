@@ -3,8 +3,8 @@
 namespace Sale\Model;
 
 
+use Core\Model\AbstractModel;
 use Doctrine\DBAL\Schema\Schema;
-use Sale\ModelInterface;
 
 class HouseModel extends AbstractModel
 {

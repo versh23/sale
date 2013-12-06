@@ -3,6 +3,7 @@
 namespace Sale\Model;
 
 
+use Core\Model\AbstractModel;
 use Doctrine\DBAL\Schema\Schema;
 
 class SnippetModel extends AbstractModel
@@ -66,9 +67,9 @@ class SnippetModel extends AbstractModel
         }
     }
 
-    public function insert($snippet, $snippet_value)
+    public function insert($data)
     {
-
+        list($snippet, $snippet_value) = $data;
         parent::insert($snippet);
         $names = $snippet_value['name'];
         $sysvals = $snippet_value['sysval'];
@@ -88,8 +89,10 @@ class SnippetModel extends AbstractModel
         return true;
     }
 
-    public function update($id, $snippet, $snippet_value)
+    public function update($id, $data)
     {
+        $values = $inserts = $deleted =[];
+        list($snippet, $snippet_value) = $data;
         $original = $this->get($id);
 
         parent::update($id, $snippet);

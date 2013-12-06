@@ -1,12 +1,11 @@
 <?php
 
-namespace Sale\Command;
+namespace Core\Command;
 
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Schema\AbstractSchemaManager;
 use Doctrine\DBAL\Schema\Comparator;
-use Doctrine\DBAL\Schema\Schema;
-use Sale\Model\AbstractModel;
+use Core\Model\AbstractModel;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;

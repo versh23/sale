@@ -6,6 +6,8 @@ use Sale\Controller\SnippetController;
 use Sale\Controller\UploadController;
 use Symfony\Component\HttpFoundation\Request;
 
+define('WEBROOT', __DIR__);
+
 require_once __DIR__ . '/../vendor/autoload.php';
 
 /**

@@ -43,7 +43,7 @@ class SnippetController implements ControllerProviderInterface
                 $snippet_value = $request->get('snippet_value');
             }
 
-            $app['model.snippet']->insert($snippet, $snippet_value);
+            $app['model.snippet']->insert([$snippet, $snippet_value]);
             return $app->redirect($app->url('adminSnippet.Index'));
         })->bind('adminSnippet.Create');
 
@@ -58,7 +58,7 @@ class SnippetController implements ControllerProviderInterface
             $snippet = $request->get('snippet');
             $snippet_value = $request->get('snippet_value');
 
-            $app['model.snippet']->update($id, $snippet, $snippet_value);
+            $app['model.snippet']->update($id, [$snippet, $snippet_value]);
             return $app->redirect($app->url('adminSnippet.Index'));
         })->bind('adminSnippet.Save');
 

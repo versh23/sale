@@ -5,10 +5,15 @@
         "symfony/twig-bridge": "~2.3",
         "doctrine/dbal": "2.2.*",
         "symfony/security": "~2.3",
-        "symfony/console": "2.5.*@dev"
+        "symfony/console": "2.5.*@dev",
+
+        "imagine/imagine": "0.6.*@dev"
     },
 
     "autoload": {
-        "psr-0": { "Sale\\": "src/" }
+        "psr-0": {
+            "Sale\\": "src/" ,
+            "Core\\": "src/"
+        }
     }
 }

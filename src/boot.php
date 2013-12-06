@@ -1,8 +1,14 @@
 <?php
 
 //DEBUG
+use Core\Service\ImageService;
+use Core\Service\UploadService;
+
 $app['debug'] = true;
-$app['twig.options'] = ['1'];
+error_reporting(E_ALL | E_STRICT);
+ini_set('display_errors', 1);
+ini_set('log_errors', 1);
+
 $app->register(new Silex\Provider\TwigServiceProvider(), array(
     'twig.path' => __DIR__ . '/../views',
     'twig.options' => array(
@@ -29,6 +35,7 @@ $app->register(new Silex\Provider\SessionServiceProvider());
 
 $app->register(new Silex\Provider\SecurityServiceProvider());
 $app->register(new Silex\Provider\RememberMeServiceProvider());
+$app->register(new Core\Provider\ImagineServiceProvider());
 
 $app['security.firewalls'] = array(
     'main' => array(
@@ -58,8 +65,17 @@ $app['security.access_rules'] = array(
     array('^/admin', 'ROLE_ADMIN'), // This url is available as anonymous user
 );
 
-
 //Register model
 $app['model.house'] = new \Sale\Model\HouseModel($app['db']);
 $app['model.apartment'] = new \Sale\Model\ApartmentModel($app['db']);
 $app['model.snippet'] = new \Sale\Model\SnippetModel($app['db']);
+$app['model.file'] = new \Sale\Model\FileModel($app['db']);
+
+//Custom services
+$app['service.upload'] = function($app){
+    return new UploadService($app['model.file']);
+};
+
+$app['service.image'] = function($app){
+    return new ImageService($app['service.upload'], $app['imagine']);
+};
