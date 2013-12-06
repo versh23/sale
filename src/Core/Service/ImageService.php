@@ -25,16 +25,21 @@ class ImageService
 
     public function getThumb($image, $width = 100, $height = 100){
 
-        //@TODO First check if exist
         $size    = new Box($width, $height);
         $mode    = ImageInterface::THUMBNAIL_INSET;
         $targetPath = $this->uploadService->getTargetDir($image['path'], UploadService::DIR_THUMB);
         $hashName =$this->uploadService->getHashName($image['path']);
+        $newName = $this->generateThumbName($hashName, $width, $height);
+        $fullThumbName = $targetPath.$newName. '.' . $image['extension'];
+
+        if(file_exists($fullThumbName)){
+            return $this->getThumbUrl($image, $newName);
+        }
+
         if(!file_exists($targetPath)){
             mkdir($targetPath, 0777);
         }
-        $newName = $this->generateThumbName($hashName, $width, $height);
-        $fullThumbName = $targetPath.$newName. '.' . $image['extension'];
+
         $fullOriginalName = $this->uploadService->getFullName($image);
         $this->imagine->open($fullOriginalName)
             ->thumbnail($size, $mode)
