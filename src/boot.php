@@ -3,6 +3,7 @@
 //DEBUG
 use Core\Service\ImageService;
 use Core\Service\UploadService;
+use Silex\Provider\FormServiceProvider;
 
 $app['debug'] = true;
 error_reporting(E_ALL | E_STRICT);
@@ -14,7 +15,8 @@ $app->register(new Silex\Provider\TwigServiceProvider(), array(
     'twig.options' => array(
         'cache' => __DIR__ . '/../cache/twig',
         'strict_variables' => false
-    )
+    ),
+    'twig.form.templates'=> ['form_div_layout.twig']
 ));
 
 $app->register(new Silex\Provider\UrlGeneratorServiceProvider());
@@ -79,3 +81,17 @@ $app['service.upload'] = function($app){
 $app['service.image'] = function($app){
     return new ImageService($app['service.upload'], $app['imagine']);
 };
+
+$app->register(new Silex\Provider\TranslationServiceProvider(), array(
+    'locale_fallbacks' => array('en'),
+    'locale' => 'ru',
+));
+$app->register(new FormServiceProvider());
+$app->register(new Silex\Provider\ValidatorServiceProvider());
+
+$app['twig'] = $app->share($app->extend('twig', function($twig, $app) {
+
+    $twig->addExtension(new Core\Twig\TwigExtension($app));
+
+    return $twig;
+}));

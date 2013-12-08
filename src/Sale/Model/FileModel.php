@@ -22,6 +22,8 @@ class FileModel extends AbstractModel
         $fileTable->addColumn('original_name', 'string', array('length' => 32));
         $fileTable->addColumn('extension', 'string', array('length' => 10));
         $fileTable->addColumn('temp', 'integer', array('length' => 1, 'default'=> 1));
+        $fileTable->addColumn('object_type', 'integer', ['notnull'=>false]);
+        $fileTable->addColumn('object_id', 'integer', ['notnull'=>false]);
 
         return $fileTable;
     }
@@ -29,6 +31,21 @@ class FileModel extends AbstractModel
     public function getTable()
     {
         return 'file';
+    }
+
+    //@TODO
+    public static function table(){
+        return 'file';
+    }
+
+    public function getForType($type, $id){
+        return $this->db->fetchAll(
+            'select * from ' . $this->getTable() . ' where object_type = :type and object_id = :id',
+            [
+                'type'=>$type,
+                'id'=>$id,
+            ]
+        );
     }
 
 

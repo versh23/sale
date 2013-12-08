@@ -1,13 +1,19 @@
 {
     "require": {
-        "silex/silex": "~1.1",
-        "twig/twig": ">=1.8,<2.0-dev",
-        "symfony/twig-bridge": "~2.3",
-        "doctrine/dbal": "2.2.*",
-        "symfony/security": "~2.3",
-        "symfony/console": "2.5.*@dev",
+        "silex/silex": "v1.1.2",
+        "twig/twig": "v1.15.0",
+        "symfony/twig-bridge": "~2.4",
+        "doctrine/dbal": "v2.4.1",
+        "symfony/security": "~2.4",
+        "symfony/console": "~2.4",
 
-        "imagine/imagine": "0.6.*@dev"
+        "symfony/form": "~2.4",
+        "symfony/translation": "~2.4",
+        "symfony/validator": "~2.4",
+        "symfony/config": "~2.4",
+
+
+        "imagine/imagine": "v0.5.0"
     },
 
     "autoload": {

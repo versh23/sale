@@ -4,6 +4,11 @@
 {% block css %}
 {{ parent() }}
     <link rel="stylesheet" href="/css/jquery.fileupload.css">
+    <style>
+        .files img{
+            padding: 0 10px;
+        }
+    </style>
 {% endblock %}
 {% block content %}
     {% set url = (house.id) ? path('adminHouse.Save', {id: house.id}) : path('adminHouse.Create') %}
@@ -43,6 +48,13 @@
                 </div>
             </div>
             <div class="form-group">
+                <label class="control-label">Кол-во квартир</label>
+
+                <div class="controls">
+                    <input type="text" class="form-control" name="house[count_apartments]" value="{{ house.count_apartments }}">
+                </div>
+            </div>
+            <div class="form-group">
                 <label class="control-label">Дата сдачи</label>
 
                 <div class="controls">
@@ -67,7 +79,13 @@
                         <div class="progress-bar progress-bar-success"></div>
                     </div>
                     <!-- The container for the uploaded files -->
-                    <div id="files" class="files"></div>
+                    <div id="files" class="files">
+                        {% for file in images %}
+                            {% set th = getThumb(file) %}
+                            <img src="{{ th }}">
+                            <input type="hidden" name="files[]" value="{{ file.id }}" />
+                        {% endfor %}
+                    </div>
                 </div>
             </div>
             <div class="panel panel-default">
@@ -97,7 +115,8 @@
                 dataType: 'json',
                 done: function (e, data) {
                     $.each(data.result.files, function (index, file) {
-                        $('<p/>').text(file.name).appendTo('#files');
+                        $('<img/>').prop('src',file.url).appendTo('#files');
+                        $('<input name="files[]" type="hidden"/>').val(file.id).appendTo('#files');
                     });
                 },
                 progressall: function (e, data) {

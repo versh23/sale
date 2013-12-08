@@ -10,6 +10,7 @@ class HouseModel extends AbstractModel
 {
 
     use SnippetTrait;
+    use FileTrait;
 
     const MATERIAL_PANEL = 1, MATERIAL_BRICK = 2, TYPE_MONOLITH = 3;
     const OBJECT_TYPE = 1;
@@ -26,6 +27,7 @@ class HouseModel extends AbstractModel
         $houseTable->addColumn('material', 'integer', array('length' => 1));
         $houseTable->addColumn('floor', 'integer', array('length' => 2));
         $houseTable->addColumn('deliverydate', 'string', array('length' => 32));
+        $houseTable->addColumn('count_apartments', 'integer');
 
         return $houseTable;
     }

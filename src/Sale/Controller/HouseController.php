@@ -35,10 +35,12 @@ class HouseController implements ControllerProviderInterface
         })->bind('adminHouse.Add');
 
         $controllers->post('/add', function (Request $request) use ($app) {
+            $files = $request->get('files');
             $house = $request->get('house');
             $snippets = $request->get('snippet');
             $id = $app['model.house']->insert($house);
             $app['model.house']->addSnippet($snippets, $id);
+            $app['model.house']->addFiles($files, $id);
 
             return $app->redirect($app->url('adminHouse.Index'));
         })->bind('adminHouse.Create');
@@ -46,25 +48,30 @@ class HouseController implements ControllerProviderInterface
         $controllers->get('/edit/{id}', function ($id) use ($app) {
             $house = $app['model.house']->getWithSnippets($id);
             $snippets = $app['model.snippet']->getForType(HouseModel::OBJECT_TYPE);
+            $images = $app['model.file']->getForType(HouseModel::OBJECT_TYPE, $id);
             $checkedSnippets = $app['model.snippet']->getChecked($house);
             return $app->render('admin/house/add.twig', [
                 'house' => $house,
                 'snippets' => $snippets,
-                'checked' => $checkedSnippets
+                'checked' => $checkedSnippets,
+                'images' => $images,
             ]);
         })->bind('adminHouse.Edit');
 
         $controllers->post('/edit/{id}', function (Request $request, $id) use ($app) {
             $house = $request->get('house');
             $snippets = $request->get('snippet');
+            $files = $request->get('files');
             $app['model.house']->update($id, $house);
             $app['model.house']->updateSnippets($id, $snippets);
+           // $app['model.house']->updateFiles($id, $files);
             return $app->redirect($app->url('adminHouse.Index'));
         })->bind('adminHouse.Save');
 
         $controllers->get('/remove/{id}', function ($id) use ($app) {
             $app['model.house']->delete($id);
             $app['model.snippet']->clear($id, HouseModel::OBJECT_TYPE);
+            //$app['model.file']->clear($id, HouseModel::OBJECT_TYPE);
             return $app->redirect($app->url('adminHouse.Index'));
         })->bind('adminHouse.Remove');
 

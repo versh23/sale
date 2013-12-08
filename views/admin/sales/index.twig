@@ -1,0 +1,25 @@
+{% extends 'admin/layout.twig' %}
+{% block title %} Админка | Продажи {% endblock %}
+{% block content %}
+    <div class="col-sm-8 col-md-8">
+        <p><a class="btn pull-right btn-success" href="{{ path('adminHouse.Add') }}">Добавить</a></p>
+
+        <div class="clearfix"></div>
+        <p></p>
+        <ul class="list-group">
+            {% for house in houses %}
+                <li class="list-group-item">
+                    <span class="b-house-list__name">
+                        {{ house.name }} ({{ house.address }})
+                    </span>
+                    <div class="pull-right btn-group">
+                        <a href="{{ path('adminHouse.Edit', {id : house.id}) }}" type="button" class="btn btn-warning">Изменить</a>
+                        <a href="{{ path('adminHouse.Remove', {id : house.id}) }}" type="button" class="btn btn-danger">Удалить</a>
+                    </div>
+                    <div class="clearfix"></div>
+                </li>
+            {% endfor %}
+        </ul>
+    </div>
+
+{% endblock %}   
