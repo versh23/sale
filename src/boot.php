@@ -15,8 +15,7 @@ $app->register(new Silex\Provider\TwigServiceProvider(), array(
     'twig.options' => array(
         'cache' => __DIR__ . '/../cache/twig',
         'strict_variables' => false
-    ),
-    'twig.form.templates'=> ['form_div_layout.twig']
+    )
 ));
 
 $app->register(new Silex\Provider\UrlGeneratorServiceProvider());
@@ -95,3 +94,5 @@ $app['twig'] = $app->share($app->extend('twig', function($twig, $app) {
 
     return $twig;
 }));
+
+$app->register(new \Core\Provider\BootstrapServiceProvider());
