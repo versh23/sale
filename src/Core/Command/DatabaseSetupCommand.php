@@ -25,13 +25,13 @@ class DatabaseSetupCommand extends Command
     private $sm = null;
 
     /**
-     * @var \CatalogApplication $app
+     * @var \SaleApplication $app
      */
     private $app;
 
     private $keys;
 
-    public function __construct(\CatalogApplication $app)
+    public function __construct(\SaleApplication $app)
     {
         $this->db = $app['db'];
         $this->sm = $this->db->getSchemaManager();

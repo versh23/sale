@@ -2,7 +2,7 @@
 
 namespace Sale\Controller;
 
-use CatalogApplication;
+use SaleApplication;
 use Sale\Model\ApartmentModel;
 use Silex\Application;
 use Silex\ControllerProviderInterface;
@@ -12,7 +12,7 @@ class ApartmentController implements ControllerProviderInterface
 {
 
     /**
-     * @param \CatalogApplication $app
+     * @param \SaleApplication $app
      * @return \Silex\ControllerCollection
      */
     public function connect(Application $app)

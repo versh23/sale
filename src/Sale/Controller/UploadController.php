@@ -2,7 +2,7 @@
 
 namespace Sale\Controller;
 
-use CatalogApplication;
+use SaleApplication;
 use Core\Service\ImageService;
 use Core\Service\UploadService;
 use Silex\Application;
@@ -15,7 +15,7 @@ class UploadController implements ControllerProviderInterface
 {
 
     /**
-     * @param \CatalogApplication $app
+     * @param \SaleApplication $app
      * @return \Silex\ControllerCollection
      */
     public function connect(Application $app)

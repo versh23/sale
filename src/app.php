@@ -2,7 +2,7 @@
 
 use Silex\Application;
 
-class CatalogApplication extends Application
+class SaleApplication extends Application
 {
     use Application\TwigTrait;
     use Application\UrlGeneratorTrait;
@@ -10,7 +10,7 @@ class CatalogApplication extends Application
     use Application\SecurityTrait;
 }
 
-$app = new CatalogApplication();
+$app = new SaleApplication();
 
 require_once __DIR__ . '/../src/boot.php';
 

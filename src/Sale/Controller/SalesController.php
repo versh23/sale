@@ -2,17 +2,15 @@
 
 namespace Sale\Controller;
 
-use CatalogApplication;
-use Sale\Model\HouseModel;
+use SaleApplication;
 use Silex\Application;
 use Silex\ControllerProviderInterface;
-use Symfony\Component\HttpFoundation\Request;
 
 class SalesController implements ControllerProviderInterface
 {
 
     /**
-     * @param \CatalogApplication $app
+     * @param \SaleApplication $app
      * @return \Silex\ControllerCollection
      */
     public function connect(Application $app)

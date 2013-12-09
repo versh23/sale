@@ -7,7 +7,7 @@ class TwigExtension extends \Twig_Extension{
 
     private $app;
 
-    public function __construct(\CatalogApplication $app){
+    public function __construct(\SaleApplication $app){
         $this->app = $app;
     }
     public function getName()
