@@ -67,10 +67,11 @@ $app['security.access_rules'] = array(
 );
 
 //Register model
-$app['model.house'] = new \Sale\Model\HouseModel($app['db']);
-$app['model.apartment'] = new \Sale\Model\ApartmentModel($app['db']);
-$app['model.snippet'] = new \Sale\Model\SnippetModel($app['db']);
-$app['model.file'] = new \Sale\Model\FileModel($app['db']);
+//@TODO mb closure?
+$app['model.house'] = new \Sale\Model\HouseModel($app);
+$app['model.apartment'] = new \Sale\Model\ApartmentModel($app);
+$app['model.snippet'] = new \Sale\Model\SnippetModel($app);
+$app['model.file'] = new \Sale\Model\FileModel($app);
 
 //Custom services
 $app['service.upload'] = function($app){

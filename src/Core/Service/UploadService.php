@@ -114,4 +114,9 @@ class UploadService
         return $this->getUploadDir().$file['path'] . '.' . $file['extension'];
     }
 
+    //@TODO clear cache too or not
+    public function remove($file){
+        return unlink($this->getFullName($file));
+    }
+
 } 

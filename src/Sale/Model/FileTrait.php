@@ -14,7 +14,22 @@ trait FileTrait {
                 'object_id'=>$id,
                 'temp'  =>  0
             ];
-            $this->db->update(FileModel::table(), $updateData, ['id'=>$file]);
+            $this->app['model.file']->update($file, $updateData);
+        }
+    }
+
+    public function updateFiles($id, $new, $old){
+        foreach($old as $oldItem){
+            $key = array_search($oldItem['id'], $new);
+            if(false === $key){
+                // Старый пропал - удалили
+                $this->app['model.file']->fullRemove($oldItem);
+            }else{
+                unset($new[$key]);
+            }
+        }
+        if(count($new)){
+            $this->addFiles($new, $id);
         }
     }
 } 

@@ -48,5 +48,17 @@ class FileModel extends AbstractModel
         );
     }
 
+    public function fullRemove($img){
+        $this->app['service.upload']->remove($img);
+        $this->delete($img['id']);
+    }
+
+    public function clear($id, $type){
+        $images = $this->getForType($type, $id);
+        foreach($images as $img){
+            $this->fullRemove($img);
+        }
+    }
+
 
 }

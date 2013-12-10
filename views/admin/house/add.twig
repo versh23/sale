@@ -5,8 +5,17 @@
     {{ parent() }}
     <link rel="stylesheet" href="/css/jquery.fileupload.css">
     <style>
-        .files img {
+        .file-item {
+            display: inline-block;
+            position: relative;
             padding: 0 10px;
+        }
+        .file-item span{
+            position: absolute;
+            top: 0;
+            right: 10px;
+            background-color: #FFF;
+            cursor: pointer;
         }
     </style>
 {% endblock %}
@@ -41,8 +50,11 @@
                 <div id="files" class="files">
                     {% for file in images %}
                         {% set th = getThumb(file) %}
-                        <img src="{{ th }}">
-                        <input type="hidden" name="files[]" value="{{ file.id }}"/>
+                        <div class="file-item">
+                            <img src="{{ th }}">
+                            <input type="hidden" name="files[]" value="{{ file.id }}"/>
+                            <span class="glyphicon glyphicon-remove-circle"></span>
+                        </div>
                     {% endfor %}
                 </div>
             </div>
@@ -68,6 +80,12 @@
     <script>
 
         $(function () {
+
+            $('#files').on('click', '.file-item span', function(){
+                $(this).parent().remove();
+            });
+
+
             'use strict';
             var url = '{{ path('upload.Do') }}';
             $('#fileupload').fileupload({
@@ -75,8 +93,15 @@
                 dataType: 'json',
                 done: function (e, data) {
                     $.each(data.result.files, function (index, file) {
-                        $('<img/>').prop('src', file.url).appendTo('#files');
-                        $('<input name="files[]" type="hidden"/>').val(file.id).appendTo('#files');
+                        var $img = $('<img/>').prop('src', file.url);
+                        var $input = $('<input name="files[]" type="hidden"/>').val(file.id);
+                        var $close = $('<span></span>').addClass('glyphicon-remove-circle').addClass('glyphicon');
+                        $('<div></div>')
+                                .addClass('file-item')
+                                .append($img)
+                                .append($input)
+                                .append($close)
+                                .appendTo('#files');
                     });
                 },
                 progressall: function (e, data) {

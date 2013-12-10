@@ -4,6 +4,7 @@ namespace Core\Model;
 
 
 use Doctrine\DBAL\Connection;
+use Silex\Application;
 
 abstract class AbstractModel
 {
@@ -16,10 +17,12 @@ abstract class AbstractModel
      * @var \Doctrine\DBAL\Connection $db
      */
     protected $db;
+    protected $app;
 
-    public function __construct(Connection $db)
+    public function __construct(Application $app)
     {
-        $this->db = $db;
+        $this->app = $app;
+        $this->db = $app['db'];
     }
 
     public function getAll()

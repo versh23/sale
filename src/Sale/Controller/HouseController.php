@@ -74,9 +74,10 @@ class HouseController implements ControllerProviderInterface
                 unset($house['snippets']);
                 $snippets = $request->get('snippet');
                 $files = $request->get('files');
+
                 $app['model.house']->update($id, $house);
                 $app['model.house']->updateSnippets($id, $snippets);
-               // $app['model.house']->updateFiles($id, $files);
+                $app['model.house']->updateFiles($id, $files, $images);
                 return $app->redirect($app->url('adminHouse.Index'));
             }
 
@@ -93,7 +94,7 @@ class HouseController implements ControllerProviderInterface
         $controllers->get('/remove/{id}', function ($id) use ($app) {
             $app['model.house']->delete($id);
             $app['model.snippet']->clear($id, HouseModel::OBJECT_TYPE);
-            //$app['model.file']->clear($id, HouseModel::OBJECT_TYPE);
+            $app['model.file']->clear($id, HouseModel::OBJECT_TYPE);
             return $app->redirect($app->url('adminHouse.Index'));
         })->bind('adminHouse.Remove');
 
