@@ -12,8 +12,16 @@ class HouseModel extends AbstractModel
     use SnippetTrait;
     use FileTrait;
 
-    const MATERIAL_PANEL = 1, MATERIAL_BRICK = 2, TYPE_MONOLITH = 3;
+    const MATERIAL_PANEL = 1, MATERIAL_BRICK = 2, MATERIAL_MONOLITH = 3;
     const OBJECT_TYPE = 1;
+
+    public static function getMaterials(){
+        return [
+            self::MATERIAL_PANEL => 'Панельный',
+            self::MATERIAL_BRICK => 'Кирпичный',
+            self::MATERIAL_MONOLITH => 'Монолитный',
+        ];
+    }
 
     public function getTableSchema()
     {

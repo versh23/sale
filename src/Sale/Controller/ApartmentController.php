@@ -6,10 +6,13 @@ use SaleApplication;
 use Sale\Model\ApartmentModel;
 use Silex\Application;
 use Silex\ControllerProviderInterface;
+use Symfony\Component\Form\Form;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Validator\Constraints as Assert;
 
 class ApartmentController implements ControllerProviderInterface
 {
+    private $app;
 
     /**
      * @param \SaleApplication $app
@@ -17,6 +20,8 @@ class ApartmentController implements ControllerProviderInterface
      */
     public function connect(Application $app)
     {
+        $this->app = $app;
+
         // creates a new controller based on the default route
         $controllers = $app['controllers_factory'];
 
@@ -27,45 +32,55 @@ class ApartmentController implements ControllerProviderInterface
             ]);
         })->bind('adminApartment.Index');
 
-        $controllers->get('/add', function () use ($app) {
-            $houses = $app['model.house']->getList();
+        $controllers->match('/add', function (Request $request) use ($app) {
             $snippets = $app['model.snippet']->getForType(ApartmentModel::OBJECT_TYPE);
+
+            $form = $this->getForm();
+
+            $form->handleRequest($request);
+
+            if($form->isValid()){
+                $apartment = $form->getData();
+                $id = $app['model.apartment']->insert($apartment);;
+
+                $snippets = $request->get('snippet');
+                $app['model.apartment']->addSnippet($snippets, $id);
+
+                return $app->redirect($app->url('adminApartment.Index'));
+            }
+
+
             return $app->render('admin/apartment/add.twig', [
-                'houses' => $houses,
                 'snippets' => $snippets,
+                'form'  =>  $form->createView()
             ]);
         })->bind('adminApartment.Add');
 
-        $controllers->post('/add', function (Request $request) use ($app) {
-            $apartment = $request->get('apartment');
-            $id = $app['model.apartment']->insert($apartment);;
-
-            $snippets = $request->get('snippet');
-            $app['model.apartment']->addSnippet($snippets, $id);
-
-            return $app->redirect($app->url('adminApartment.Index'));
-        })->bind('adminApartment.Create');
-
-        $controllers->get('/edit/{id}', function ($id) use ($app) {
+        $controllers->match('/edit/{id}', function (Request $request, $id) use ($app) {
             $apartment = $app['model.apartment']->getWithSnippets($id);
-            $houses = $app['model.house']->getList();
             $snippets = $app['model.snippet']->getForType(ApartmentModel::OBJECT_TYPE);
             $checkedSnippets = $app['model.snippet']->getChecked($apartment);
+
+            $form = $this->getForm($apartment);
+
+            $form->handleRequest($request);
+            if($form->isValid()){
+                $apartment = $form->getData();
+                unset($apartment['snippets']);
+                $snippets = $request->get('snippet');
+                $app['model.apartment']->update($id, $apartment);
+                $app['model.apartment']->updateSnippets($id, $snippets);
+                return $app->redirect($app->url('adminApartment.Index'));
+            }
+
             return $app->render('admin/apartment/add.twig', [
                 'apartment' => $apartment,
-                'houses' => $houses,
                 'snippets' => $snippets,
                 'checked' => $checkedSnippets,
+                'form'  =>  $form->createView()
             ]);
         })->bind('adminApartment.Edit');
 
-        $controllers->post('/edit/{id}', function (Request $request, $id) use ($app) {
-            $apartment = $request->get('apartment');
-            $snippets = $request->get('snippet');
-            $app['model.apartment']->update($id, $apartment);
-            $app['model.apartment']->updateSnippets($id, $snippets);
-            return $app->redirect($app->url('adminApartment.Index'));
-        })->bind('adminApartment.Save');
 
         $controllers->get('/remove/{id}', function ($id) use ($app) {
             $app['model.apartment']->delete($id);
@@ -76,5 +91,43 @@ class ApartmentController implements ControllerProviderInterface
 
 
         return $controllers;
+    }
+
+
+    /**
+     * @param null $data
+     * @return Form
+     */
+    private function getForm($data = null){
+
+        $houses = $this->app['model.house']->getList();
+        foreach($houses as $h){
+            $normal_houses[$h['id']] = $h['name'];
+        }
+
+        $form = $this->app->form($data)
+            ->add('house_id', 'choice', [
+                'label'=>'В доме',
+                'choices'   => $normal_houses
+            ])
+            ->add('cnt_room', 'integer',[
+                'label'=>'Кол - во комнат',
+                'constraints'   =>  [
+                    new Assert\NotBlank(),
+                    new Assert\Type('int')
+                ]
+            ])
+            ->add('square', 'integer',[
+                'label'=>'Квадратура',
+                'constraints'   =>  [
+                    new Assert\NotBlank(),
+                    new Assert\Type('int')
+                ]
+            ])
+            ->add('save', 'submit', ['label'=>(is_null($data)) ? 'Добавить' : 'Сохранить'])
+
+            ->getForm();
+
+        return $form;
     }
 }

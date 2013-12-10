@@ -2,53 +2,20 @@
 {% import "admin/snippet/macro.twig" as _snippets %}
 {% block title %} Админка | Квартиры {% endblock %}
 {% block content %}
-    {% set url = (apartment.id) ? path('adminApartment.Save', {id: apartment.id}) : path('adminApartment.Create') %}
-    {% set text = (apartment.id) ? 'Сохранить' : 'Добавить' %}
 <div class="col-sm-8 col-md-8">
-          <form method="post" action="{{ url }}">
-            <div class="form-group">
-              <label class="control-label">В доме ...</label>
-              <div class="controls">
-                <select class="form-control" name="apartment[house_id]">
-                {% for house in houses %}
-                    <option {% if apartment.house_id == house.id %} selected {% endif %} value="{{ house.id }}">{{ house.name }}</option>
-                {% endfor %}
-                </select>
-              </div>
-            </div>
-            <div class="form-group">
-              <label class="control-label">Кол - во комнат</label>
-              <div class="controls">
-                <input type="text" class="form-control" name="apartment[cnt_room]" value="{{ apartment.cnt_room }}">
-              </div>
-            </div>
-            <div class="form-group">
-              <label class="control-label">Квадратура</label>
-              <div class="controls">
-                <input type="text" class="form-control" name="apartment[square]" value="{{ apartment.square }}">
-              </div>
-            </div>
-            <div class="form-group">
-              <label class="control-label">Фотоальбом типа</label>
-              <div class="controls">
-                <button class="btn btn-primary">Выбрать файлы</button>
-                <span class="help-block">Первая фотка будет как главная</span>
-                <div>
-                  <img src="https://app.divshot.com/img/placeholder-100x100.gif">
-                  <img src="https://app.divshot.com/img/placeholder-100x100.gif">
-                  <img src="https://app.divshot.com/img/placeholder-100x100.gif">
-                  <img src="https://app.divshot.com/img/placeholder-100x100.gif">
-                </div>
-              </div>
-            </div>
-            <div class="panel panel-default">
-              <div class="panel-heading">Дополнительные признаки
-              </div>
-              <div class="panel-body">
-                    {{ _snippets.draw(snippets, checked) }}
-              </div>
-            </div>
-            <button class="btn pull-right btn-success">{{ text }}</button>
-          </form>
+    {{ form_start(form) }}
+    {{ form_errors(form) }}
+    {{ form_row(form.house_id) }}
+    {{ form_row(form.cnt_room) }}
+    {{ form_row(form.square) }}
+    <div class="panel panel-default">
+        <div class="panel-heading">Дополнительные признаки
+        </div>
+        <div class="panel-body">
+            {{ _snippets.draw(snippets, checked) }}
+        </div>
+    </div>
+    {{ form_end(form) }}
+
 </div>  
 {% endblock %}  

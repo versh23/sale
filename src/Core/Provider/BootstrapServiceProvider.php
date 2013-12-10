@@ -15,7 +15,7 @@ class BootstrapServiceProvider implements ServiceProviderInterface
 
     public function register(Application $app)
     {
-        $app['twig.loader']->addLoader(new \Twig_Loader_Filesystem(SRCROOT . '/Core/Resources'));
-        $app['twig.form.templates'] = ['bootstrap.twig'];
+        $app['twig.loader.filesystem']->addPath(SRCROOT . '/Core/Resources', 'Sale');
+        $app['twig.form.templates'] = ['@Sale\bootstrap.twig'];
     }
 }

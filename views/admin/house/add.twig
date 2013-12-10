@@ -2,105 +2,65 @@
 {% import "admin/snippet/macro.twig" as _snippets %}
 {% block title %} Админка | Дома {% endblock %}
 {% block css %}
-{{ parent() }}
+    {{ parent() }}
     <link rel="stylesheet" href="/css/jquery.fileupload.css">
     <style>
-        .files img{
+        .files img {
             padding: 0 10px;
         }
     </style>
 {% endblock %}
 {% block content %}
-    {% set url = (house.id) ? path('adminHouse.Save', {id: house.id}) : path('adminHouse.Create') %}
-    {% set text = (house.id) ? 'Сохранить' : 'Добавить' %}
     <div class="col-sm-8 col-md-8">
-        <form action="{{ url }}" method="post">
-            <div class="form-group">
-                <label class="control-label">Название дома</label>
+        {{ form_start(form) }}
+        {{ form_errors(form) }}
+        {{ form_row(form.name) }}
+        {{ form_row(form.address) }}
+        {{ form_row(form.material) }}
+        {{ form_row(form.floor) }}
+        {{ form_row(form.count_apartments) }}
+        {{ form_row(form.deliverydate) }}
+        <div class="form-group">
+            <label class="control-label">Фотоальбом типа</label>
 
-                <div class="controls">
-                    <input type="text" class="form-control" name="house[name]" value="{{ house.name }}">
+            <div class="controls">
+                <!-- The fileinput-button span is used to style the file input field as button -->
+        <span class="btn btn-success fileinput-button">
+        <i class="glyphicon glyphicon-plus"></i>
+        <span>Добавить файлы</span>
+        <!-- The file input field used as target for the file upload widget -->
+        <input id="fileupload" type="file" name="files[]" multiple>
+        </span>
+                <br>
+                <br>
+                <!-- The global progress bar -->
+                <div id="progress" class="progress">
+                    <div class="progress-bar progress-bar-success"></div>
+                </div>
+                <!-- The container for the uploaded files -->
+                <div id="files" class="files">
+                    {% for file in images %}
+                        {% set th = getThumb(file) %}
+                        <img src="{{ th }}">
+                        <input type="hidden" name="files[]" value="{{ file.id }}"/>
+                    {% endfor %}
                 </div>
             </div>
-            <div class="form-group">
-                <label class="control-label">Адрес</label>
+        </div>
+        <div class="panel panel-default">
+            <div class="panel-heading">Дополнительные признаки
+            </div>
+            <div class="panel-body">
+                {{ _snippets.draw(snippets, checked) }}
+            </div>
+        </div>
 
-                <div class="controls">
-                    <input type="text" class="form-control" name="house[address]" value="{{ house.address }}">
-                </div>
-            </div>
-            <div class="form-group">
-                <label class="control-label">Тип материала</label>
-
-                <div class="controls">
-                    <select class="form-control" name="house[material]">
-                        <option {% if house.material == 1 %} selected {% endif %} value="1">Панельный</option>
-                        <option {% if house.material == 2 %} selected {% endif %} value="2">Кирпичный</option>
-                        <option {% if house.material == 3 %} selected {% endif %} value="3">Монолитный</option>
-                    </select>
-                </div>
-            </div>
-            <div class="form-group">
-                <label class="control-label">Кол-во этажей</label>
-
-                <div class="controls">
-                    <input type="text" class="form-control" name="house[floor]" value="{{ house.floor }}">
-                </div>
-            </div>
-            <div class="form-group">
-                <label class="control-label">Кол-во квартир</label>
-
-                <div class="controls">
-                    <input type="text" class="form-control" name="house[count_apartments]" value="{{ house.count_apartments }}">
-                </div>
-            </div>
-            <div class="form-group">
-                <label class="control-label">Дата сдачи</label>
-
-                <div class="controls">
-                    <input type="text" class="form-control" name="house[deliverydate]" value="{{ house.deliverydate }}">
-                </div>
-            </div>
-            <div class="form-group">
-                <label class="control-label">Фотоальбом типа</label>
-
-                <div class="controls">
-                    <!-- The fileinput-button span is used to style the file input field as button -->
-                    <span class="btn btn-success fileinput-button">
-                        <i class="glyphicon glyphicon-plus"></i>
-                        <span>Добавить файлы</span>
-                        <!-- The file input field used as target for the file upload widget -->
-                        <input id="fileupload" type="file" name="files[]" multiple>
-                    </span>
-                    <br>
-                    <br>
-                    <!-- The global progress bar -->
-                    <div id="progress" class="progress">
-                        <div class="progress-bar progress-bar-success"></div>
-                    </div>
-                    <!-- The container for the uploaded files -->
-                    <div id="files" class="files">
-                        {% for file in images %}
-                            {% set th = getThumb(file) %}
-                            <img src="{{ th }}">
-                            <input type="hidden" name="files[]" value="{{ file.id }}" />
-                        {% endfor %}
-                    </div>
-                </div>
-            </div>
-            <div class="panel panel-default">
-                <div class="panel-heading">Дополнительные признаки
-                </div>
-                <div class="panel-body">
-                    {{ _snippets.draw(snippets, checked) }}
-                </div>
-            </div>
-            <button class="btn pull-right btn-success">{{ text }}</button>
-        </form>
+        {{ form_row(form.save) }}
+        {{ form_end(form) }}
     </div>
 {% endblock %}
 {% block js %}
-{{ parent() }}
+    {{ parent() }}
     <script type="text/javascript" src="/js/jquery.ui.widget.js"></script>
     <script type="text/javascript" src="/js/jquery.iframe-transport.js"></script>
     <script type="text/javascript" src="/js/jquery.fileupload.js"></script>
@@ -115,7 +75,7 @@
                 dataType: 'json',
                 done: function (e, data) {
                     $.each(data.result.files, function (index, file) {
-                        $('<img/>').prop('src',file.url).appendTo('#files');
+                        $('<img/>').prop('src', file.url).appendTo('#files');
                         $('<input name="files[]" type="hidden"/>').val(file.id).appendTo('#files');
                     });
                 },

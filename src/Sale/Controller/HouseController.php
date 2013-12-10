@@ -6,10 +6,14 @@ use SaleApplication;
 use Sale\Model\HouseModel;
 use Silex\Application;
 use Silex\ControllerProviderInterface;
+use Symfony\Component\Form\Form;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Validator\Constraints as Assert;
+
 
 class HouseController implements ControllerProviderInterface
 {
+    private $app;
 
     /**
      * @param \SaleApplication $app
@@ -17,6 +21,8 @@ class HouseController implements ControllerProviderInterface
      */
     public function connect(Application $app)
     {
+        $this->app = $app;
+
         // creates a new controller based on the default route
         $controllers = $app['controllers_factory'];
 
@@ -27,46 +33,62 @@ class HouseController implements ControllerProviderInterface
             ]);
         })->bind('adminHouse.Index');
 
-        $controllers->get('/add', function () use ($app) {
+        $controllers->match('/add', function (Request $request) use ($app) {
             $snippets = $app['model.snippet']->getForType(HouseModel::OBJECT_TYPE);
+            /**
+             * @var Form $form;
+             */
+            $form = $this->getForm();
+            $form->handleRequest($request);
+
+            if($form->isValid()){
+
+                $files = $request->get('files');
+                $house = $form->getData();
+                $snippets = $request->get('snippet');
+                $id = $app['model.house']->insert($house);
+                $app['model.house']->addSnippet($snippets, $id);
+                $app['model.house']->addFiles($files, $id);
+                return $app->redirect($app->url('adminHouse.Index'));
+            }
+
             return $app->render('admin/house/add.twig', [
+                'form' => $form->createView(),
                 'snippets' => $snippets
             ]);
         })->bind('adminHouse.Add');
 
-        $controllers->post('/add', function (Request $request) use ($app) {
-            $files = $request->get('files');
-            $house = $request->get('house');
-            $snippets = $request->get('snippet');
-            $id = $app['model.house']->insert($house);
-            $app['model.house']->addSnippet($snippets, $id);
-            $app['model.house']->addFiles($files, $id);
-
-            return $app->redirect($app->url('adminHouse.Index'));
-        })->bind('adminHouse.Create');
-
-        $controllers->get('/edit/{id}', function ($id) use ($app) {
+        $controllers->match('/edit/{id}', function (Request $request, $id) use ($app) {
             $house = $app['model.house']->getWithSnippets($id);
             $snippets = $app['model.snippet']->getForType(HouseModel::OBJECT_TYPE);
             $images = $app['model.file']->getForType(HouseModel::OBJECT_TYPE, $id);
             $checkedSnippets = $app['model.snippet']->getChecked($house);
+            /**
+             * @var Form $form;
+             */
+            $form = $this->getForm($house);
+
+            $form->handleRequest($request);
+            if($form->isValid()){
+                $house = $form->getData();
+                unset($house['snippets']);
+                $snippets = $request->get('snippet');
+                $files = $request->get('files');
+                $app['model.house']->update($id, $house);
+                $app['model.house']->updateSnippets($id, $snippets);
+               // $app['model.house']->updateFiles($id, $files);
+                return $app->redirect($app->url('adminHouse.Index'));
+            }
+
             return $app->render('admin/house/add.twig', [
                 'house' => $house,
                 'snippets' => $snippets,
                 'checked' => $checkedSnippets,
                 'images' => $images,
+                'form' => $form->createView(),
             ]);
         })->bind('adminHouse.Edit');
 
-        $controllers->post('/edit/{id}', function (Request $request, $id) use ($app) {
-            $house = $request->get('house');
-            $snippets = $request->get('snippet');
-            $files = $request->get('files');
-            $app['model.house']->update($id, $house);
-            $app['model.house']->updateSnippets($id, $snippets);
-           // $app['model.house']->updateFiles($id, $files);
-            return $app->redirect($app->url('adminHouse.Index'));
-        })->bind('adminHouse.Save');
 
         $controllers->get('/remove/{id}', function ($id) use ($app) {
             $app['model.house']->delete($id);
@@ -76,5 +98,53 @@ class HouseController implements ControllerProviderInterface
         })->bind('adminHouse.Remove');
 
         return $controllers;
+    }
+
+    private function getForm($data = null){
+        $form = $this->app->form($data)
+            ->add('name', 'text', [
+                'label'=>'Название дома',
+                'constraints'   =>  [
+                    new Assert\NotBlank()
+                ]
+            ])
+            ->add('address', 'text',[
+                'label'=>'Адрес',
+                'constraints'   =>  [
+                    new Assert\NotBlank()
+                ]
+            ])
+            ->add('material', 'choice', [
+                    'choices' => HouseModel::getMaterials(),
+                    'expanded' => false,
+                    'label' => 'Тип материала',
+
+                ]
+            )
+            ->add('floor', 'integer',[
+                'label'=>'Этаж',
+                'constraints'   =>  [
+                    new Assert\NotBlank(),
+                    new Assert\Type('int')
+                ]
+            ])
+            ->add('count_apartments', 'integer',[
+                'label'=>'Кол-во квартир',
+                'constraints'   =>  [
+                    new Assert\NotBlank(),
+                    new Assert\Type('int')
+                ]
+            ])
+            ->add('deliverydate', 'text',[
+                'label'=>'Дата сдачи',
+                'constraints'   =>  [
+                    new Assert\NotBlank()
+                ]
+            ])
+            ->add('save', 'submit', ['label'=>(is_null($data)) ? 'Добавить' : 'Сохранить'])
+
+            ->getForm();
+
+        return $form;
     }
 }

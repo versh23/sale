@@ -8,6 +8,7 @@ class SaleApplication extends Application
     use Application\UrlGeneratorTrait;
     use Silex\Route\SecurityTrait;
     use Application\SecurityTrait;
+    use Silex\Application\FormTrait;
 }
 
 $app = new SaleApplication();
