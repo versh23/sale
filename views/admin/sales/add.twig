@@ -1,0 +1,13 @@
+{% extends 'admin/layout.twig' %}
+{% block title %} Админка | Продажи {% endblock %}
+{% block css %}
+    {{ parent() }}
+{% endblock %}
+{% block content %}
+    <div class="col-sm-8 col-md-8">
+        {{ form(form) }}
+    </div>
+{% endblock %}
+{% block js %}
+    {{ parent() }}
+{% endblock %}

@@ -70,20 +70,16 @@ $app['security.access_rules'] = array(
 );
 
 //Register model
-//@TODO mb closure?
-$app['model.house'] = new \Sale\Model\HouseModel($app);
-$app['model.apartment'] = new \Sale\Model\ApartmentModel($app);
-$app['model.snippet'] = new \Sale\Model\SnippetModel($app);
-$app['model.file'] = new \Sale\Model\FileModel($app);
+$app['model.house'] =  $app->share(function($app){return new \Sale\Model\HouseModel($app);});
+$app['model.apartment'] =  $app->share(function($app){return new \Sale\Model\ApartmentModel($app);});
+$app['model.snippet'] =  $app->share(function($app){return new \Sale\Model\SnippetModel($app);});
+$app['model.file'] =  $app->share(function($app){return new \Sale\Model\FileModel($app);});
+$app['model.sales'] =  $app->share(function($app){return new \Sale\Model\SalesModel($app);});
 
 //Custom services
-$app['service.upload'] = function($app){
-    return new UploadService($app['model.file']);
-};
+$app['service.upload'] = $app->share(function($app){return new UploadService($app['model.file']);});
+$app['service.image'] =  $app->share(function($app){return new ImageService($app['service.upload'], $app['imagine']);});
 
-$app['service.image'] = function($app){
-    return new ImageService($app['service.upload'], $app['imagine']);
-};
 
 $app->register(new Silex\Provider\TranslationServiceProvider(), array(
     'locale_fallbacks' => array('en'),

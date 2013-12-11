@@ -5,24 +5,104 @@ namespace Sale\Controller;
 use SaleApplication;
 use Silex\Application;
 use Silex\ControllerProviderInterface;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Validator\Constraints as Assert;
+
 
 class SalesController implements ControllerProviderInterface
 {
-
+    private $app;
     /**
      * @param \SaleApplication $app
      * @return \Silex\ControllerCollection
      */
     public function connect(Application $app)
     {
+        $this->app = $app;
         // creates a new controller based on the default route
         $controllers = $app['controllers_factory'];
 
         $controllers->get('/', function () use ($app) {
+            $sales = $app['model.sales']->getAll();
             return $app->render('admin/sales/index.twig', [
+                'sales'=>$sales
             ]);
         })->bind('adminSales.Index');
 
+        $controllers->match('/add', function (Request $request) use ($app) {
+
+            $form = $this->getForm();
+            $form->handleRequest($request);
+
+            if($form->isValid()){
+
+                $sale = $form->getData();
+                $id = $app['model.sales']->insert($sale);
+                return $app->redirect($app->url('adminSales.Index'));
+            }
+
+            return $app->render('admin/sales/add.twig', [
+                'form' => $form->createView(),
+            ]);
+        })->bind('adminSales.Add');
+
+        $controllers->match('/edit/{id}', function (Request $request, $id) use ($app) {
+            $sale = $app['model.sales']->get($id);
+            /**
+             * @var Form $form;
+             */
+            $form = $this->getForm($sale);
+
+            $form->handleRequest($request);
+            if($form->isValid()){
+                $sale = $form->getData();
+
+                $app['model.sales']->update($id, $sale);
+                return $app->redirect($app->url('adminSales.Index'));
+            }
+
+            return $app->render('admin/sales/add.twig', [
+                'form' => $form->createView(),
+            ]);
+        })->bind('adminSales.Edit');
+
+
+        $controllers->get('/remove/{id}', function ($id) use ($app) {
+            $app['model.sales']->delete($id);
+            return $app->redirect($app->url('adminSales.Index'));
+        })->bind('adminSales.Remove');
         return $controllers;
     }
+
+    private function getForm($data = null){
+
+        $list = $this->app['model.apartment']->getWithHouseName();
+        $normalList =[];
+        foreach($list as $row){
+            $normalList[$row['aid']] = $row['hname'] . ' - ' . $row['aid'];
+        }
+        $form = $this->app->form($data)
+            ->add('ap_number', 'integer', [
+                'label'=>'Номер квартиры',
+                'constraints'   =>  [
+                    new Assert\NotBlank()
+                ]
+            ])
+            ->add('apartment_id', 'choice', [
+                'label'=>'Тип квартиры',
+                'choices'   => $normalList
+            ])
+            ->add('fio', 'text', [
+                'label'=>'ФИО покупателя',
+                'constraints'   =>  [
+                    new Assert\NotBlank()
+                ]
+            ])
+            ->add('save', 'submit', ['label'=>(is_null($data)) ? 'Добавить' : 'Сохранить'])
+
+            ->getForm();
+
+        return $form;
+    }
+
 }

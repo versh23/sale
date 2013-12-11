@@ -21,14 +21,21 @@ class ApartmentModel extends AbstractModel
         $apartmentTable->addColumn('id', 'integer', array('autoincrement' => true));
         $apartmentTable->setPrimaryKey(array('id'));
         $apartmentTable->addColumn('house_id', 'integer');
-        //@TODO получить название таблицы другим способом?
-        $apartmentTable->addForeignKeyConstraint('house', ['house_id'], ['id'], ['onDelete' => 'CASCADE']);
+        $apartmentTable->addForeignKeyConstraint($this->app['model.house']->getTable(), ['house_id'], ['id'], ['onDelete' => 'CASCADE']);
         $apartmentTable->addColumn('cnt_room', 'integer');
         $apartmentTable->addColumn('square', 'integer');
 
         return $apartmentTable;
     }
 
+    public function getWithHouseName(){
+        $qb = $this->db->createQueryBuilder();
+        $qb->select('a.id as aid, h.name as hname')
+            ->from($this->getTable(), 'a')
+            ->innerJoin('a', $this->app['model.house']->getTable(),'h', 'h.id = a.house_id')
+           ;
+        return $qb->execute()->fetchAll();
+    }
     public function getTable()
     {
         return 'apartment';
