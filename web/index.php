@@ -9,9 +9,6 @@ use Symfony\Component\HttpFoundation\Request;
 
 use Symfony\Component\Validator\Constraints as Assert;
 
-define('WEBROOT', __DIR__);
-define('SRCROOT', __DIR__ . '/../src');
-
 require_once __DIR__ . '/../vendor/autoload.php';
 
 /**

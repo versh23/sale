@@ -17,6 +17,7 @@
             background-color: #FFF;
             cursor: pointer;
         }
+
     </style>
 {% endblock %}
 {% block content %}
@@ -28,6 +29,24 @@
         {{ form_row(form.material) }}
         {{ form_row(form.floor) }}
         {{ form_row(form.count_apartments) }}
+        <div class="form-group row">
+            <div class="col-md-4">
+                {{ form_label(form.count_1) }}
+                {{ form_widget(form.count_1) }}
+                {{ form_errors(form.count_1) }}
+            </div>
+            <div class="col-md-4">
+                {{ form_label(form.count_2) }}
+                {{ form_widget(form.count_2) }}
+                {{ form_errors(form.count_2) }}
+            </div>
+            <div class="col-md-4">
+                {{ form_label(form.count_3) }}
+                {{ form_widget(form.count_3) }}
+                {{ form_errors(form.count_3) }}
+            </div>
+        </div>
+
         {{ form_row(form.deliverydate) }}
         <div class="form-group">
             <label class="control-label">Фотоальбом типа</label>
@@ -95,7 +114,9 @@
                     $.each(data.result.files, function (index, file) {
                         var $img = $('<img/>').prop('src', file.url);
                         var $input = $('<input name="files[]" type="hidden"/>').val(file.id);
-                        var $close = $('<span></span>').addClass('glyphicon-remove-circle').addClass('glyphicon');
+                        var $close = $('<span></span>')
+                                .addClass('glyphicon-remove-circle')
+                                .addClass('glyphicon');
                         $('<div></div>')
                                 .addClass('file-item')
                                 .append($img)

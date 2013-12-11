@@ -1,5 +1,8 @@
 <?php
 
+define('WEBROOT', __DIR__ . '/../web');
+define('SRCROOT', __DIR__ );
+
 //DEBUG
 use Core\Service\ImageService;
 use Core\Service\UploadService;

@@ -136,6 +136,27 @@ class HouseController implements ControllerProviderInterface
                     new Assert\Type('int')
                 ]
             ])
+            ->add('count_1', 'integer',[
+                'label'=>'На этаже однокомнтаных',
+                'constraints'   =>  [
+                    new Assert\NotBlank(),
+                    new Assert\Type('int')
+                ],
+            ])
+            ->add('count_2', 'integer',[
+                'label'=>'На этаже двухкомнтаных',
+                'constraints'   =>  [
+                    new Assert\NotBlank(),
+                    new Assert\Type('int')
+                ]
+            ])
+            ->add('count_3', 'integer',[
+                'label'=>'На этаже трехкомнтаных',
+                'constraints'   =>  [
+                    new Assert\NotBlank(),
+                    new Assert\Type('int')
+                ]
+            ])
             ->add('deliverydate', 'text',[
                 'label'=>'Дата сдачи',
                 'constraints'   =>  [

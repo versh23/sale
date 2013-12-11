@@ -37,6 +37,10 @@ class HouseModel extends AbstractModel
         $houseTable->addColumn('deliverydate', 'string', array('length' => 32));
         $houseTable->addColumn('count_apartments', 'integer');
 
+        $houseTable->addColumn('count_1', 'integer');
+        $houseTable->addColumn('count_2', 'integer');
+        $houseTable->addColumn('count_3', 'integer');
+
         return $houseTable;
     }
 

@@ -101,6 +101,7 @@ class ApartmentController implements ControllerProviderInterface
     private function getForm($data = null){
 
         $houses = $this->app['model.house']->getList();
+        $normal_houses = [];
         foreach($houses as $h){
             $normal_houses[$h['id']] = $h['name'];
         }
