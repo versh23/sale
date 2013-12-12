@@ -1,8 +1,25 @@
 {% extends 'layout.twig' %}
-
+{% block js %}
+    {{ parent() }}
+    <script src="/plugins/ckeditor/ckeditor.js"></script>
+    <script>
+        // Replace the <textarea id="editor1"> with a CKEditor
+        // instance, using default configuration.
+        CKEDITOR.replace( 'editor1',{
+            filebrowserImageUploadUrl: '{{ url('upload.Do', {type: 'ck'}) }}'
+        });
+    </script>
+{% endblock %}
 {% block body %}
     <div class="row">
         <div class="col-md-12">
+            <form>
+                <textarea id="editor1" name="editor1" rows="10" cols="80">
+                    This is my textarea to be replaced with CKEditor.
+                </textarea>
+
+            </form>
         </div>
     </div>
 {% endblock %}
+

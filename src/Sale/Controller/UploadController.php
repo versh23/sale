@@ -27,10 +27,17 @@ class UploadController implements ControllerProviderInterface
         $controllers->post('/', function (Request $request) use ($app) {
 
             $files = [];
+            if($ck = $request->get('type', false)){
+                $procFiles = $request->files->get('upload');
+                $procFiles = [$procFiles];
+            }else{
+                $procFiles = $request->files->get('files');
+            }
+
             /**
              * @var UploadedFile $file
              */
-            foreach ($request->files->get('files') as $file) {
+            foreach ($procFiles as $file) {
                 /**
                  * @var UploadService $uploadService
                  */
@@ -40,6 +47,16 @@ class UploadController implements ControllerProviderInterface
                  * @var ImageService $imageService
                  */
                 $imageService = $app['service.image'];
+
+                //@todo подумать над передачей размеров кастомных
+                if($ck){
+                    $url = $uploadService->getUrl($fileData);
+                    $func = $request->get('CKEditorFuncNum');
+                    $response = "
+                    <script type=\"text/javascript\">window.parent.CKEDITOR.tools.callFunction($func, '$url', '');</script>
+                    ";
+                    return new Response(trim($response));
+                }
                 $url = $imageService->getThumb($fileData);
                 $files[] = [
                     'url' => $url,
