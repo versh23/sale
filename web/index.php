@@ -12,7 +12,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 require_once __DIR__ . '/../vendor/autoload.php';
 
 /**
- * @var CatalogApplication $app ;
+ * @var SaleApplication $app ;
  */
 $app = require __DIR__ . '/../src/app.php';
 
