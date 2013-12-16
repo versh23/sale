@@ -75,6 +75,7 @@ $app['model.apartment'] =  $app->share(function($app){return new \Sale\Model\Apa
 $app['model.snippet'] =  $app->share(function($app){return new \Sale\Model\SnippetModel($app);});
 $app['model.file'] =  $app->share(function($app){return new \Sale\Model\FileModel($app);});
 $app['model.sales'] =  $app->share(function($app){return new \Sale\Model\SalesModel($app);});
+$app['model.page'] =  $app->share(function($app){return new \Sale\Model\PageModel($app);});
 
 //Custom services
 $app['service.upload'] = $app->share(function($app){return new UploadService($app['model.file']);});

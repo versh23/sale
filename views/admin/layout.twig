@@ -20,6 +20,9 @@
                         <li {% if subMenu == 'Sales' %}class="active"{% endif %}>
                             <a href="{{ path('adminSales.Index') }}">Продажи</a>
                         </li>
+                        <li {% if subMenu == 'Page' %}class="active"{% endif %}>
+                            <a href="{{ path('adminPage.Index') }}">Страницы</a>
+                        </li>
                     </ul>
                 </div>
             </div>

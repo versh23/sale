@@ -20,18 +20,15 @@
             <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
               <span class="sr-only">Toggle navigation</span><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span>
             </button>
-            <a href="{{ path('index') }}" class="navbar-brand">БЕЛСМП</a>
+            <a href="{{ path('Main.Pages') }}" class="navbar-brand">БЕЛСМП</a>
           </div>
           <div class="collapse navbar-collapse" style>
             <ul class="nav navbar-nav">
-                <li {% if mainMenu == 'index' %}class="active"{% endif %}>
-                    <a href="{{ path('index') }}">Главная</a>
+                <li {% if mainMenu == 'main' %}class="active"{% endif %}>
+                    <a href="{{ path('Main.Pages') }}">Главная</a>
                 </li>
-                <li {% if mainMenu == 'houses' %}class="active"{% endif %}>
-                    <a href="{{ path('index') }}">Райончики</a>
-                </li>
-                <li {% if mainMenu == 'houses' %}class="active"{% endif %}>
-                    <a href="{{ path('index') }}">О нас</a>
+                <li {% if mainMenu == 'about' %}class="active"{% endif %}>
+                    <a href="{{ path('Main.Pages', {'sysname': 'about'}) }}">О нас</a>
                 </li>
             {% if app.user and is_granted('ROLE_ADMIN') %}
               <li {% if mainMenu == 'adminIndex' %}class="active"{% endif %}>
