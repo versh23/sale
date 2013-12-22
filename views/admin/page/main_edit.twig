@@ -1,0 +1,180 @@
+{% extends 'admin/layout.twig' %}
+{% block title %} Админка | Настройка главной {% endblock %}
+
+{% block css %}
+    {{ parent() }}
+    <link rel="stylesheet" href="/css/jquery.fileupload.css">
+    <style>
+        .file-item {
+            display: inline-block;
+            position: relative;
+            padding: 0 10px;
+        }
+        .file-item span{
+            position: absolute;
+            top: 0;
+            right: 10px;
+            background-color: #FFF;
+            cursor: pointer;
+        }
+
+    </style>
+{% endblock %}
+
+{% block content %}
+<div class="col-sm-8 col-md-8">
+    {{ form_start(form) }}
+    {{ form_errors(form) }}
+    {{ form_row(form.sitename) }}
+    {{ form_row(form.description) }}
+    {{ form_row(form.keywords) }}
+
+    <div class="form-group">
+        <label class="control-label">Фото для слайдера</label>
+
+        <div class="controls">
+            <!-- The fileinput-button span is used to style the file input field as button -->
+                <span class="btn btn-success fileinput-button">
+                <i class="glyphicon glyphicon-plus"></i>
+                <span>Загрузить</span>
+                <!-- The file input field used as target for the file upload widget -->
+                <input id="fileupload" type="file" name="files[]" multiple>
+                </span>
+            <br>
+            <br>
+            <!-- The global progress bar -->
+            <div id="progress" class="progress">
+                <div class="progress-bar progress-bar-success"></div>
+            </div>
+            <!-- The container for the uploaded files -->
+            <div id="files" class="files">
+                {% for file in images %}
+                    {% set th = getThumb(file) %}
+                    <div class="file-item">
+                        <img src="{{ th }}">
+                        <input type="hidden" name="files[]" value="{{ file.id }}"/>
+                        <span class="glyphicon glyphicon-remove-circle"></span>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+    <div class="form-group">
+        <style type="text/css">
+            #YMapsID {
+                height: 300px;
+            }
+        </style>
+        <div id="YMapsID"></div>
+        {{ form_row(form.address) }}
+        {{ form_row(form.latlon) }}
+    </div>
+    {{ form_end(form) }}
+</div>
+{% endblock %}
+
+{% block js %}
+    {{ parent() }}
+    <script type="text/javascript" src="/js/jquery.ui.widget.js"></script>
+    <script type="text/javascript" src="/js/jquery.iframe-transport.js"></script>
+    <script type="text/javascript" src="/js/jquery.fileupload.js"></script>
+    <script src="//api-maps.yandex.ru/2.1.3/?lang=ru-RU&load=package.full" type="text/javascript"></script>
+    <script>
+        var myMap, searchControl;
+        $(function () {
+
+            ymaps.ready(function () {
+                 myMap = new ymaps.Map('YMapsID', {
+
+                    center: {% if page.latlon %}{{ '[' ~ page.latlon ~ ']' }}{% else %}[55.751574, 37.573856]{% endif %},
+                    zoom: 15,
+                    controls: ['geolocationControl', 'zoomControl']
+                });
+                searchControl = new ymaps.control.SearchControl({ options: { noPlacemark: true }});
+                myMap.controls.add(searchControl);
+
+                //Выбор найденного
+                searchControl.events.add('resultselect', function(e){
+                    var index = e.get('index');
+                    searchControl.getResult(index).then(function (geoObject) {
+                        myMap.geoObjects.removeAll();
+                        myMap.geoObjects.add(geoObject);
+                    }, this);
+                    var coords = searchControl.getResultsArray()[e.get('index')].geometry.getCoordinates();
+                    getAddress(coords);
+                });
+
+                {% if page.latlon %}
+                var _point = new ymaps.Placemark({{ '[' ~ page.latlon ~ ']' }},{},{
+                    draggable: true
+                });
+                myMap.geoObjects.add(_point);
+                _point.events.add('dragend', function () {
+                    var _pointCoords = _point.geometry.getCoordinates();
+                    getAddress(_pointCoords);
+                });
+                {% endif %}
+
+                // Слушаем клик на карте
+                myMap.events.add('click', function (e) {
+                    var coords = e.get('coords');
+
+                    var point = new ymaps.Placemark(coords,{},{
+                        draggable: true
+                    });
+                    point.events.add('dragend', function () {
+                        var pointCoords = point.geometry.getCoordinates();
+                        getAddress(pointCoords);
+                    });
+
+                    myMap.geoObjects.removeAll();
+                    myMap.geoObjects.add(point);
+
+                    getAddress(coords);
+                });
+                function getAddress(coords) {
+                        $('#form_latlon').val(coords.toString());
+                        ymaps.geocode(coords).then(function (res) {
+                            var firstGeoObject = res.geoObjects.get(0);
+                            $('#form_address').val(firstGeoObject.properties.get('text'));
+                        });
+                    }
+                });
+
+            $('#files').on('click', '.file-item span', function(){
+                $(this).parent().remove();
+            });
+
+
+            'use strict';
+            var url = '{{ path('upload.Do') }}';
+            $('#fileupload').fileupload({
+                url: url,
+                dataType: 'json',
+                done: function (e, data) {
+                    $.each(data.result.files, function (index, file) {
+                        var $img = $('<img/>').prop('src', file.url);
+                        var $input = $('<input name="files[]" type="hidden"/>').val(file.id);
+                        var $close = $('<span></span>')
+                                .addClass('glyphicon-remove-circle')
+                                .addClass('glyphicon');
+                        $('<div></div>')
+                                .addClass('file-item')
+                                .append($img)
+                                .append($input)
+                                .append($close)
+                                .appendTo('#files');
+                    });
+                },
+                progressall: function (e, data) {
+                    var progress = parseInt(data.loaded / data.total * 100, 10);
+                    $('#progress .progress-bar').css(
+                            'width',
+                            progress + '%'
+                    );
+                }
+            }).prop('disabled', !$.support.fileInput)
+                    .parent().addClass($.support.fileInput ? undefined : 'disabled');
+        });
+    </script>
+{% endblock %}

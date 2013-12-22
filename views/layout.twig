@@ -25,10 +25,10 @@
           <div class="collapse navbar-collapse" style>
             <ul class="nav navbar-nav">
                 <li {% if mainMenu == 'main' %}class="active"{% endif %}>
-                    <a href="{{ path('Main.Pages') }}">Главная</a>
+                    <a href="{{ path('main') }}">Главная</a>
                 </li>
                 <li {% if mainMenu == 'about' %}class="active"{% endif %}>
-                    <a href="{{ path('Main.Pages', {'sysname': 'about'}) }}">О нас</a>
+                    <a href="{{ path('about') }}">О нас</a>
                 </li>
             {% if app.user and is_granted('ROLE_ADMIN') %}
               <li {% if mainMenu == 'adminIndex' %}class="active"{% endif %}>

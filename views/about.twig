@@ -1,0 +1,43 @@
+{% extends 'layout.twig' %}
+{% block title %}
+    {{ page.title }}
+{% endblock %}
+{% block css %}
+    {{ parent() }}
+{% endblock %}
+{% block body %}
+<div class="row">
+    <div class="col-md-8">
+        <div id="map" style="height:300px"></div>
+    </div>
+    <div class="col-md-4">
+    </div>
+</div>
+
+
+
+{% endblock %}
+
+{% block js %}
+    {{ parent() }}
+    <script src="http://api-maps.yandex.ru/2.0-stable/?load=package.standard&lang=ru-RU" type="text/javascript"> </script>
+    <script>
+        var myMap;
+
+        // Дождёмся загрузки API и готовности DOM.
+        ymaps.ready(init);
+
+        function init () {
+            // Создание экземпляра карты и его привязка к контейнеру с
+            // заданным id ("map").
+            myMap = new ymaps.Map('map', {
+                // При инициализации карты обязательно нужно указать
+                // её центр и коэффициент масштабирования.
+                center:[55.76, 37.64], // Москва
+                zoom:10
+            });
+
+        }
+    </script>
+{% endblock %}
+

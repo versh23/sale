@@ -76,6 +76,7 @@ $app['model.snippet'] =  $app->share(function($app){return new \Sale\Model\Snipp
 $app['model.file'] =  $app->share(function($app){return new \Sale\Model\FileModel($app);});
 $app['model.sales'] =  $app->share(function($app){return new \Sale\Model\SalesModel($app);});
 $app['model.page'] =  $app->share(function($app){return new \Sale\Model\PageModel($app);});
+$app['model.settings'] =  $app->share(function($app){return new \Sale\Model\SettingsModel($app);});
 
 //Custom services
 $app['service.upload'] = $app->share(function($app){return new UploadService($app['model.file']);});

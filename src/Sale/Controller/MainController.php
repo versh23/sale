@@ -38,6 +38,16 @@ class MainController implements ControllerProviderInterface
             return $app->render('admin/index.twig', []);
         })->bind('adminIndex');
 
+        $controllers->get('/', function() use($app) {
+            return $app->render('index.twig', []);
+        })
+            ->bind('main');
+
+        $controllers->get('/about', function() use($app) {
+            return $app->render('about.twig', []);
+        })
+            ->bind('about');
+
         $controllers->get('/{sysname}', function ($sysname) use ($app) {
 
             if(is_null($sysname)) $sysname = 'main';

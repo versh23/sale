@@ -23,6 +23,22 @@ class UploadController implements ControllerProviderInterface
         // creates a new controller based on the default route
         $controllers = $app['controllers_factory'];
 
+        $controllers->post('/save', function(Request $request) use ($app){
+            if($request->isXmlHttpRequest()){
+                $title = $request->get('title');
+                $desc = $request->get('desc');
+                $id  = $request->get('id');
+
+                if($id){
+                    $app['model.file']->update($id, [
+                        'title' =>  $title,
+                        'description'   => $desc
+                    ]);
+
+                    return $app->json(['status'=>'success']);
+                }
+            }
+        })->bind('upload.Save');
 
         $controllers->post('/', function (Request $request) use ($app) {
 

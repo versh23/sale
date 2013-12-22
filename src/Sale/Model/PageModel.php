@@ -19,7 +19,7 @@ class PageModel extends AbstractModel
         $pageTable->setPrimaryKey(array('id'));
         $pageTable->addColumn('sysname', 'string');
         $pageTable->addColumn('title', 'string');
-        $pageTable->addColumn('content', 'text');
+        $pageTable->addColumn('content', 'text', ['notnull'=>false]);
 
         return $pageTable;
     }

@@ -4,21 +4,6 @@
 {% block css %}
     {{ parent() }}
     <link rel="stylesheet" href="/css/jquery.fileupload.css">
-    <style>
-        .file-item {
-            display: inline-block;
-            position: relative;
-            padding: 0 10px;
-        }
-        .file-item span{
-            position: absolute;
-            top: 0;
-            right: 10px;
-            background-color: #FFF;
-            cursor: pointer;
-        }
-
-    </style>
 {% endblock %}
 {% block content %}
     <div class="col-sm-8 col-md-8">
@@ -53,12 +38,12 @@
 
             <div class="controls">
                 <!-- The fileinput-button span is used to style the file input field as button -->
-        <span class="btn btn-success fileinput-button">
-        <i class="glyphicon glyphicon-plus"></i>
-        <span>Добавить файлы</span>
-        <!-- The file input field used as target for the file upload widget -->
-        <input id="fileupload" type="file" name="files[]" multiple>
-        </span>
+                <span class="btn btn-success fileinput-button">
+                <i class="glyphicon glyphicon-plus"></i>
+                <span>Добавить файлы</span>
+                <!-- The file input field used as target for the file upload widget -->
+                <input id="fileupload" type="file" name="files[]" multiple>
+                </span>
                 <br>
                 <br>
                 <!-- The global progress bar -->
@@ -69,12 +54,11 @@
                 <div id="files" class="files">
                     {% for file in images %}
                         {% set th = getThumb(file) %}
-                        <div class="file-item">
-                            <img src="{{ th }}">
-                            <input type="hidden" name="files[]" value="{{ file.id }}"/>
-                            <span class="glyphicon glyphicon-remove-circle"></span>
-                        </div>
+                        {% include 'admin/file/element.twig' %}
                     {% endfor %}
+                </div>
+                <div id="file-tpl" style="display: none;">
+                    {% include 'admin/file/element.twig' %}
                 </div>
             </div>
         </div>
@@ -100,8 +84,25 @@
 
         $(function () {
 
-            $('#files').on('click', '.file-item span', function(){
-                $(this).parent().remove();
+            var saveUrl = '{{ path('upload.Save') }}';
+
+            $('#files')
+                    .on('click', '.photo-remove', function(){
+                        $(this).parent().parent().remove();
+            })
+                    .on('click', '.photo-save', function(){
+                        var pid = $(this).data('id');
+                        var desc = $('#desc-' + pid).val();
+                        var title = $('#title-' + pid).val();
+
+                        $.ajax(saveUrl,{
+                            data: {'title': title, 'desc': desc , 'id': pid},
+                            type: "POST"
+                        }).done(function(){
+
+                                });
+
+
             });
 
 
@@ -112,17 +113,12 @@
                 dataType: 'json',
                 done: function (e, data) {
                     $.each(data.result.files, function (index, file) {
-                        var $img = $('<img/>').prop('src', file.url);
-                        var $input = $('<input name="files[]" type="hidden"/>').val(file.id);
-                        var $close = $('<span></span>')
-                                .addClass('glyphicon-remove-circle')
-                                .addClass('glyphicon');
-                        $('<div></div>')
-                                .addClass('file-item')
-                                .append($img)
-                                .append($input)
-                                .append($close)
-                                .appendTo('#files');
+                        var tpl = $('#file-tpl').html();
+
+                        tpl = tpl.replace(/__id__/g, file.id).replace(/__th__/g, file.url);
+
+                        $(tpl).appendTo('#files');
+
                     });
                 },
                 progressall: function (e, data) {

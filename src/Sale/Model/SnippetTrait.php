@@ -30,6 +30,7 @@ trait SnippetTrait
         $insertes = [];
 
         $normalNewSnippets = [];
+        if(is_null($newSnippets)) $newSnippets = [];
         //Преобразуем новые в массивы значений
         foreach ($newSnippets as $sysname => $dirtySysval) {
             $type = SnippetModel::TYPE_MULTI;

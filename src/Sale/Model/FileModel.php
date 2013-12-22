@@ -20,6 +20,8 @@ class FileModel extends AbstractModel
         $fileTable->addColumn('path', 'string', array('length' => 32));
         $fileTable->addColumn('mime', 'string', array('length' => 32));
         $fileTable->addColumn('original_name', 'string', array('length' => 32));
+        $fileTable->addColumn('title', 'string', array('length' => 32));
+        $fileTable->addColumn('description', 'string', array('length' => 32));
         $fileTable->addColumn('extension', 'string', array('length' => 10));
         $fileTable->addColumn('temp', 'integer', array('length' => 1, 'default'=> 1));
         $fileTable->addColumn('object_type', 'integer', ['notnull'=>false]);
