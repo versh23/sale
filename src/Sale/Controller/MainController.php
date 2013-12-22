@@ -2,6 +2,7 @@
 
 namespace Sale\Controller;
 
+use Sale\Model\HouseModel;
 use Sale\Model\PageModel;
 use SaleApplication;
 use Silex\Application;
@@ -50,15 +51,32 @@ class MainController implements ControllerProviderInterface
             $images = $app['model.file']->getForType(PageModel::OBJECT_TYPE, 'main');
 
 
+            //Дома
+            $houses = $app['model.house']->getAll();
+            $houseImages = [];
+            foreach($houses as $house){
+                $houseImages[$house['id']] = $app['model.file']->getForType(HouseModel::OBJECT_TYPE, $house['id']);
+            }
+
             return $app->render('index.twig', [
                 'page'=>$page,
-                'images'=>$images
+                'images'=>$images,
+                'houses'=>$houses,
+                'houseImages'=>$houseImages,
             ]);
         })
             ->bind('main');
 
         $controllers->get('/about', function() use($app) {
-            return $app->render('about.twig', []);
+            $page = $app['model.settings']->getAll();
+            $page = (count($page)) ? array_pop($page) : null;
+            $id = null;
+            if(!is_null($page)){
+                $id = $page['id'];
+            }
+            return $app->render('about.twig', [
+                'page'  =>  $page
+            ]);
         })
             ->bind('about');
 

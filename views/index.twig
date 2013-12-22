@@ -5,120 +5,9 @@
 {% block css %}
     {{ parent() }}
     <link rel="stylesheet" href="/css/slider.css">
+    <link rel="stylesheet" href="/css/main-page.css">
 {% endblock %}
 {% block body %}
-    <style>
-        .item img{
-            margin: auto;
-        }
-
-
-        .img-home-portfolio,
-        .img-customer,
-        .portfolio-item {
-            margin-bottom: 30px;
-        }
-
-        .tab-pane {
-            margin-top: 15px;
-        }
-
-        /* Page Sections */
-        .section,
-        .section-colored {
-            padding: 50px 0;
-        }
-
-        .section-colored {
-            background-color: #e1e1e1; /* change this to change the background color of a colored section */
-        }
-
-        .sidebar {
-            margin-top: 40px;
-        }
-
-        .sidebar ul {
-            border-radius: 5px;
-            padding: 5px;
-            border: 1px solid #cccccc;
-        }
-
-        /* Half Page Height Carousel Customization */
-        .carousel {
-            height: 50%;
-        }
-
-        .item,
-        .active,
-        .carousel-inner {
-            height: 100%;
-        }
-
-        .fill {
-            width: 100%;
-            height: 100%;
-            background-position: center;
-            background-size: cover;
-        }
-
-        /* Social Icons Styles */
-        .list-social-icons {
-            margin-bottom: 45px;
-        }
-
-        .tooltip-social a {
-            text-decoration: none;
-            color: inherit;
-        }
-
-        .facebook-link a:hover {
-            color: #3b5998;
-        }
-
-        .linkedin-link a:hover {
-            color: #007fb1;
-        }
-
-        .twitter-link a:hover {
-            color: #39a9e0;
-        }
-
-        .google-plus-link a:hover {
-            color: #d14836;
-        }
-
-        /* Service Page Styles */
-        .service-icon {
-            font-size: 50px;
-        }
-
-        /* 404 Page Styles */
-        .error-404 {
-            font-size: 8em;
-        }
-
-        /* Pricing Page Styles */
-        .price {
-            font-size: 4em;
-        }
-
-        .price-cents {
-            vertical-align: super;
-            font-size: 50%;
-        }
-
-        .price-month {
-            font-size: 35%;
-            font-style: italic;
-        }
-
-        /* Footer Styles */
-        footer {
-            margin: 50px 0;
-        }
-
-
-    </style>
     <div class="row">
         <div class="col-md-12">
 
@@ -155,8 +44,8 @@
 
             <div class="row">
                 <div class="col-lg-12">
-                    <h2>Modern Business: A Clean &amp; Simple Full Website Template by Start Bootstrap</h2>
-                    <p>A complete website design featuring various single page templates from Start Bootstraps library of free HTML starter templates.</p>
+                    <h2>Рекламныый текст - заголовк</h2>
+                    <p>Рекламный текст - подробный</p>
                     <hr>
                 </div>
             </div><!-- /.row -->
@@ -165,66 +54,36 @@
 
     </div>
 
-
-
-    <div class="section-colored">
-
-        <div class="container">
-
-            <div class="row">
-                <div class="col-lg-6 col-md-6 col-sm-6">
-                    <h2>Modern Business Features Include:</h2>
-                    <ul>
-                        <li>Bootstrap 3 Framework</li>
-                        <li>Mobile Responsive Design</li>
-                        <li>Predefined File Paths</li>
-                        <li>Working PHP Contact Page</li>
-                        <li>Minimal Custom CSS Styles</li>
-                        <li>Unstyled: Add Your Own Style and Content!</li>
-                        <li>Font-Awesome fonts come pre-installed!</li>
-                        <li>100% <strong>Free</strong> to Use</li>
-                        <li>Open Source: Use for any project, private or commercial!</li>
-                    </ul>
-                </div>
-                <div class="col-lg-6 col-md-6 col-sm-6">
-                    <img class="img-responsive" src="http://placehold.it/700x450/ffffff/cccccc">
-                </div>
-            </div><!-- /.row -->
-
-        </div><!-- /.container -->
-
-    </div>
-
-
-
+{% for house in houses %}
 
     <div class="section-colored">
 
         <div class="container">
 
             <div class="row">
+
                 <div class="col-lg-6 col-md-6 col-sm-6">
-                    <img class="img-responsive" src="http://placehold.it/700x450">
+                    <h2>{{ house.name }}</h2>
+                    <ul>
+                        <li>Инфа о доме</li>
+                    </ul>
+                    <p>
+                        может карта
+                    </p>
                 </div>
                 <div class="col-lg-6 col-md-6 col-sm-6">
-                    <h2>Modern Business Features Include:</h2>
-                    <ul>
-                        <li>Bootstrap 3 Framework</li>
-                        <li>Mobile Responsive Design</li>
-                        <li>Predefined File Paths</li>
-                        <li>Working PHP Contact Page</li>
-                        <li>Minimal Custom CSS Styles</li>
-                        <li>Unstyled: Add Your Own Style and Content!</li>
-                        <li>Font-Awesome fonts come pre-installed!</li>
-                        <li>100% <strong>Free</strong> to Use</li>
-                        <li>Open Source: Use for any project, private or commercial!</li>
-                    </ul>
+                    <!--700x450-->
+                    <img class="img-responsive" src="{{ getThumb(houseImages[house.id][0], 700, 450, 'outbound') }}">
                 </div>
             </div><!-- /.row -->
 
         </div><!-- /.container -->
 
     </div>
+{% endfor %}
+
+
+
 {% endblock %}
 
 {% block js %}

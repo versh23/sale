@@ -11,6 +11,8 @@
         <div id="map" style="height:300px"></div>
     </div>
     <div class="col-md-4">
+        Время работы и что еще?
+        телефоны там
     </div>
 </div>
 
@@ -33,9 +35,17 @@
             myMap = new ymaps.Map('map', {
                 // При инициализации карты обязательно нужно указать
                 // её центр и коэффициент масштабирования.
-                center:[55.76, 37.64], // Москва
-                zoom:10
+                center:[{{ page.latlon }}],
+                zoom:15
             });
+
+            {% if page.latlon %}
+            var _point = new ymaps.Placemark({{ '[' ~ page.latlon ~ ']' }},{},{
+                draggable: false
+            });
+            myMap.geoObjects.add(_point);
+            {% endif %}
+
 
         }
     </script>
