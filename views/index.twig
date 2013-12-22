@@ -1,6 +1,6 @@
 {% extends 'layout.twig' %}
 {% block title %}
-    {{ page.title }}
+    {{ page.sitename }}
 {% endblock %}
 {% block css %}
     {{ parent() }}
@@ -124,26 +124,20 @@
 
             <!-- Start WOWSlider.com BODY section -->
             <div id="wowslider-container1">
-                <div class="ws_images"><ul>
-                        <li><img src="http://placehold.it/960x360" alt="Coast" title="Coast" id="wows1_0"/>Rio de Janeiro, Brazil</li>
-                        <li><img src="http://placehold.it/960x360" alt="Christ the Redeemer" title="Christ the Redeemer" id="wows1_1"/>Rio de Janeiro, Brazil</li>
-                        <li><img src="http://placehold.it/960x360" alt="Night lights" title="Night lights" id="wows1_2"/>Rio de Janeiro, Brazil</li>
-                        <li><img src="http://placehold.it/960x360" alt="Panorama" title="Panorama" id="wows1_3"/>Rio de Janeiro, Brazil</li>
-                        <li><img src="http://placehold.it/960x360" alt="Sunset" title="Sunset" id="wows1_4"/>Rio de Janeiro, Brazil</li>
-                        <li><img src="http://placehold.it/960x360" alt="View of the city" title="View of the city" id="wows1_5"/>Rio de Janeiro, Brazil</li>
-                        <li><img src="http://placehold.it/960x360" alt="Waterscape" title="Waterscape" id="wows1_6"/>Rio de Janeiro, Brazil</li>
-                        <li><img src="http://placehold.it/960x360" alt="City ​​at night" title="City ​​at night" id="wows1_7"/>Rio de Janeiro, Brazil</li>
-                    </ul></div>
+                <div class="ws_images">
+                    <ul>
+                        {% for img in images %}
+                        <li><!--960x360-->
+                            <img src="{{ getThumb(img, 960, 360, 'outbound') }}" alt="{{ img.description }}" title="{{ img.title }}" id="{{ img.id }}"/>{{ img.description }}
+                        </li>
+                        {% endfor %}
+                    </ul>
+                </div>
                 <div class="ws_thumbs">
                     <div>
-                        <a href="#" title="Coast"><img src="http://placehold.it/240x90" alt="" /></a>
-                        <a href="#" title="Christ the Redeemer"><img src="http://placehold.it/240x90" alt="" /></a>
-                        <a href="#" title="Night lights"><img src="http://placehold.it/240x90" alt="" /></a>
-                        <a href="#" title="Panorama"><img src="http://placehold.it/240x90" alt="" /></a>
-                        <a href="#" title="Sunset"><img src="http://placehold.it/240x90" alt="" /></a>
-                        <a href="#" title="View of the city"><img src="http://placehold.it/240x90" alt="" /></a>
-                        <a href="#" title="Waterscape"><img src="http://placehold.it/240x90" alt="" /></a>
-                        <a href="#" title="City ​​at night"><img src="http://placehold.it/240x90" alt="" /></a>
+                        {% for img in images %}
+                            <a href="#" title="{{ img.title }}"><img src="{{ getThumb(img, 240, 90, 'outbound') }}" alt="{{ img.description }}" /></a>
+                        {% endfor %}
                     </div>
                 </div>
                 <div class="ws_shadow"></div>

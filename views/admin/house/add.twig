@@ -1,5 +1,8 @@
 {% extends 'admin/layout.twig' %}
 {% import "admin/snippet/macro.twig" as _snippets %}
+
+{% use 'admin/file/init.twig' %}
+
 {% block title %} Админка | Дома {% endblock %}
 {% block css %}
     {{ parent() }}
@@ -37,29 +40,7 @@
             <label class="control-label">Фотоальбом типа</label>
 
             <div class="controls">
-                <!-- The fileinput-button span is used to style the file input field as button -->
-                <span class="btn btn-success fileinput-button">
-                <i class="glyphicon glyphicon-plus"></i>
-                <span>Добавить файлы</span>
-                <!-- The file input field used as target for the file upload widget -->
-                <input id="fileupload" type="file" name="files[]" multiple>
-                </span>
-                <br>
-                <br>
-                <!-- The global progress bar -->
-                <div id="progress" class="progress">
-                    <div class="progress-bar progress-bar-success"></div>
-                </div>
-                <!-- The container for the uploaded files -->
-                <div id="files" class="files">
-                    {% for file in images %}
-                        {% set th = getThumb(file) %}
-                        {% include 'admin/file/element.twig' %}
-                    {% endfor %}
-                </div>
-                <div id="file-tpl" style="display: none;">
-                    {% include 'admin/file/element.twig' %}
-                </div>
+                {{ block('filefield') }}
             </div>
         </div>
         <div class="panel panel-default">
@@ -76,60 +57,5 @@
 {% endblock %}
 {% block js %}
     {{ parent() }}
-    <script type="text/javascript" src="/js/jquery.ui.widget.js"></script>
-    <script type="text/javascript" src="/js/jquery.iframe-transport.js"></script>
-    <script type="text/javascript" src="/js/jquery.fileupload.js"></script>
-
-    <script>
-
-        $(function () {
-
-            var saveUrl = '{{ path('upload.Save') }}';
-
-            $('#files')
-                    .on('click', '.photo-remove', function(){
-                        $(this).parent().parent().remove();
-            })
-                    .on('click', '.photo-save', function(){
-                        var pid = $(this).data('id');
-                        var desc = $('#desc-' + pid).val();
-                        var title = $('#title-' + pid).val();
-
-                        $.ajax(saveUrl,{
-                            data: {'title': title, 'desc': desc , 'id': pid},
-                            type: "POST"
-                        }).done(function(){
-
-                                });
-
-
-            });
-
-
-            'use strict';
-            var url = '{{ path('upload.Do') }}';
-            $('#fileupload').fileupload({
-                url: url,
-                dataType: 'json',
-                done: function (e, data) {
-                    $.each(data.result.files, function (index, file) {
-                        var tpl = $('#file-tpl').html();
-
-                        tpl = tpl.replace(/__id__/g, file.id).replace(/__th__/g, file.url);
-
-                        $(tpl).appendTo('#files');
-
-                    });
-                },
-                progressall: function (e, data) {
-                    var progress = parseInt(data.loaded / data.total * 100, 10);
-                    $('#progress .progress-bar').css(
-                            'width',
-                            progress + '%'
-                    );
-                }
-            }).prop('disabled', !$.support.fileInput)
-                    .parent().addClass($.support.fileInput ? undefined : 'disabled');
-        });
-    </script>
+    {{ block('jsinit') }}
 {% endblock %}

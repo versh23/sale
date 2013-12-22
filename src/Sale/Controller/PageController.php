@@ -2,6 +2,7 @@
 
 namespace Sale\Controller;
 
+use Sale\Model\PageModel;
 use SaleApplication;
 use Silex\Application;
 use Silex\ControllerProviderInterface;
@@ -85,14 +86,19 @@ class PageController implements ControllerProviderInterface
             }
 
             $form = $this->getMainForm($page);
+            $images = $app['model.file']->getForType(PageModel::OBJECT_TYPE, 'main');
 
             $form->handleRequest($request);
             if($form->isValid()){
                 $page = $form->getData();
+                $files = $request->get('files');
+
                 if(!is_null($id)){
                     $app['model.settings']->update($id, $page);
+                    $app['model.page']->updateFiles('main', $files, $images);
                 }else{
                     $app['model.settings']->insert($page);
+                    $app['model.page']->addFiles($files, 'main');
                 }
 
                 return $app->redirect($app->url('adminPage.Index'));
@@ -100,7 +106,8 @@ class PageController implements ControllerProviderInterface
 
             return $app->render('admin/page/main_edit.twig', [
                 'page' => $page,
-                'form'  =>  $form->createView()
+                'form'  =>  $form->createView(),
+                'images'    =>  $images
             ]);
         })->bind('adminPage.mainEdit');
 

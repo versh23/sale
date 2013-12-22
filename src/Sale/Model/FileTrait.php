@@ -9,12 +9,15 @@ trait FileTrait {
         $type = $this::OBJECT_TYPE;
 
         foreach($files as $file){
-            $updateData = [
-                'object_type'=>$type,
-                'object_id'=>$id,
-                'temp'  =>  0
-            ];
-            $this->app['model.file']->update($file, $updateData);
+            if($file != '__id__'){
+                $updateData = [
+                    'object_type'=>$type,
+                    'object_id'=>$id,
+                    'temp'  =>  0
+                ];
+                $this->app['model.file']->update($file, $updateData);
+            }
+
         }
     }
 

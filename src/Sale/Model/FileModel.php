@@ -25,7 +25,7 @@ class FileModel extends AbstractModel
         $fileTable->addColumn('extension', 'string', array('length' => 10));
         $fileTable->addColumn('temp', 'integer', array('length' => 1, 'default'=> 1));
         $fileTable->addColumn('object_type', 'integer', ['notnull'=>false]);
-        $fileTable->addColumn('object_id', 'integer', ['notnull'=>false]);
+        $fileTable->addColumn('object_id', 'string', ['notnull'=>false]);
 
         return $fileTable;
     }

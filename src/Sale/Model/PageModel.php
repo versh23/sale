@@ -9,6 +9,8 @@ use Doctrine\DBAL\Schema\Schema;
 
 class PageModel extends AbstractModel
 {
+    const OBJECT_TYPE = 3;
+    use FileTrait;
 
     public function getTableSchema()
     {

@@ -2,6 +2,7 @@
 
 namespace Sale\Controller;
 
+use Sale\Model\PageModel;
 use SaleApplication;
 use Silex\Application;
 use Silex\ControllerProviderInterface;
@@ -39,7 +40,20 @@ class MainController implements ControllerProviderInterface
         })->bind('adminIndex');
 
         $controllers->get('/', function() use($app) {
-            return $app->render('index.twig', []);
+
+            $page = $app['model.settings']->getAll();
+            $page = (count($page)) ? array_pop($page) : null;
+            $id = null;
+            if(!is_null($page)){
+                $id = $page['id'];
+            }
+            $images = $app['model.file']->getForType(PageModel::OBJECT_TYPE, 'main');
+
+
+            return $app->render('index.twig', [
+                'page'=>$page,
+                'images'=>$images
+            ]);
         })
             ->bind('main');
 
@@ -48,7 +62,7 @@ class MainController implements ControllerProviderInterface
         })
             ->bind('about');
 
-        $controllers->get('/{sysname}', function ($sysname) use ($app) {
+        $controllers->get('/page/{sysname}', function ($sysname) use ($app) {
 
             if(is_null($sysname)) $sysname = 'main';
 
