@@ -2,6 +2,7 @@
 
 namespace Sale\Controller;
 
+use Sale\Model\ApartmentModel;
 use Sale\Model\HouseModel;
 use Sale\Model\PageModel;
 use SaleApplication;
@@ -50,7 +51,6 @@ class MainController implements ControllerProviderInterface
             }
             $images = $app['model.file']->getForType(HouseModel::OBJECT_TYPE, null);
 
-
             //Дома
             $houses = $app['model.house']->getAll();
             $houseImages = [];
@@ -67,6 +67,60 @@ class MainController implements ControllerProviderInterface
         })
             ->bind('main');
 
+        $controllers->get('/house/{id}', function($id) use($app) {
+
+            $page = $app['model.settings']->getAll();
+            $page = (count($page)) ? array_pop($page) : null;
+            $id = null;
+            if(!is_null($page)){
+                $id = $page['id'];
+            }
+            $images = $app['model.file']->getForType(ApartmentModel::OBJECT_TYPE, null);
+
+            //Квартиры
+            $apartments = $app['model.apartment']->getWithHouseName($id);
+            $house = $app['model.house']->get($id);
+
+            $apartmentImages = [];
+            foreach($apartments as $apartment){
+                $apartmentImages[$apartment['id']] = $app['model.file']->getForType(ApartmentModel::OBJECT_TYPE, $apartment['id']);
+            }
+            return $app->render('house.twig', [
+                'page'=>$page,
+                'images'=>$images,
+                'apartments'=>$apartments,
+                'apartmentImages'=>$apartmentImages,
+                'house'         => $house
+            ]);
+        })
+            ->bind('house.show');
+        $controllers->get('/apartment/{id}', function($id) use($app) {
+
+            $page = $app['model.settings']->getAll();
+            $page = (count($page)) ? array_pop($page) : null;
+            $id = null;
+            if(!is_null($page)){
+                $id = $page['id'];
+            }
+            $images = $app['model.file']->getForType(ApartmentModel::OBJECT_TYPE, null);
+
+            //Квартиры
+            $apartments = $app['model.apartment']->getWithHouseName($id);
+            $house = $app['model.house']->get($id);
+
+            $apartmentImages = [];
+            foreach($apartments as $apartment){
+                $apartmentImages[$apartment['id']] = $app['model.file']->getForType(ApartmentModel::OBJECT_TYPE, $apartment['id']);
+            }
+            return $app->render('house.twig', [
+                'page'=>$page,
+                'images'=>$images,
+                'apartments'=>$apartments,
+                'apartmentImages'=>$apartmentImages,
+                'house'         => $house
+            ]);
+        })
+            ->bind('apartment.show');
         $controllers->get('/about', function() use($app) {
             $page = $app['model.settings']->getAll();
             $page = (count($page)) ? array_pop($page) : null;

@@ -177,6 +177,13 @@ class HouseController implements ControllerProviderInterface
                 ]
             ])
 
+            ->add('custom_text', 'textarea',[
+                'label'=>'Контент',
+                'constraints'   =>  [
+                    new Assert\NotBlank()
+                ]
+            ])
+
 
             ->add('save', 'submit', ['label'=>(is_null($data)) ? 'Добавить' : 'Сохранить'])
 

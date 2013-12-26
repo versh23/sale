@@ -12,6 +12,7 @@ class ApartmentModel extends AbstractModel
     const OBJECT_TYPE = 2;
 
     use SnippetTrait;
+    use FileTrait;
 
     public function getTableSchema()
     {
@@ -29,12 +30,15 @@ class ApartmentModel extends AbstractModel
         return $apartmentTable;
     }
 
-    public function getWithHouseName(){
+    public function getWithHouseName($id = null){
         $qb = $this->db->createQueryBuilder();
         $qb->select('a.id as aid, a.*,  h.name as hname, h.address as adr')
             ->from($this->getTable(), 'a')
             ->innerJoin('a', $this->app['model.house']->getTable(),'h', 'h.id = a.house_id')
            ;
+        if(!is_null($id)){
+            $qb->where('h.id = :id')->setParameter('id', $id);
+        }
         return $qb->execute()->fetchAll();
     }
     public function getTable()

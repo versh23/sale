@@ -41,10 +41,12 @@ class ApartmentController implements ControllerProviderInterface
 
             if($form->isValid()){
                 $apartment = $form->getData();
+                $files = $request->get('files');
                 $id = $app['model.apartment']->insert($apartment);;
 
                 $snippets = $request->get('snippet');
                 $app['model.apartment']->addSnippet($snippets, $id);
+                $app['model.apartment']->addFiles($files, $id);
 
                 return $app->redirect($app->url('adminApartment.Index'));
             }
@@ -60,16 +62,19 @@ class ApartmentController implements ControllerProviderInterface
             $apartment = $app['model.apartment']->getWithSnippets($id);
             $snippets = $app['model.snippet']->getForType(ApartmentModel::OBJECT_TYPE);
             $checkedSnippets = $app['model.snippet']->getChecked($apartment);
+            $images = $app['model.file']->getForType(ApartmentModel::OBJECT_TYPE, $id);
 
             $form = $this->getForm($apartment);
 
             $form->handleRequest($request);
             if($form->isValid()){
                 $apartment = $form->getData();
+                $files = $request->get('files');
                 unset($apartment['snippets']);
                 $snippets = $request->get('snippet');
                 $app['model.apartment']->update($id, $apartment);
                 $app['model.apartment']->updateSnippets($id, $snippets);
+                $app['model.apartment']->updateFiles($id, $files, $images);
                 return $app->redirect($app->url('adminApartment.Index'));
             }
 
@@ -77,6 +82,7 @@ class ApartmentController implements ControllerProviderInterface
                 'apartment' => $apartment,
                 'snippets' => $snippets,
                 'checked' => $checkedSnippets,
+                'images' => $images,
                 'form'  =>  $form->createView()
             ]);
         })->bind('adminApartment.Edit');

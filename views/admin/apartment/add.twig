@@ -1,6 +1,12 @@
 {% extends 'admin/layout.twig' %}
 {% import "admin/snippet/macro.twig" as _snippets %}
+{% use 'admin/file/init.twig' %}
+
 {% block title %} Админка | Квартиры {% endblock %}
+{% block css %}
+    {{ parent() }}
+    <link rel="stylesheet" href="/css/jquery.fileupload.css">
+{% endblock %}
 {% block content %}
 <div class="col-sm-8 col-md-8">
     {{ form_start(form) }}
@@ -9,6 +15,13 @@
     {{ form_row(form.cnt_room) }}
     {{ form_row(form.square) }}
     {{ form_row(form.cost) }}
+    <div class="form-group">
+        <label class="control-label">Фотоальбом типа</label>
+
+        <div class="controls">
+            {{ block('filefield') }}
+        </div>
+    </div>
     <div class="panel panel-default">
         <div class="panel-heading">Дополнительные признаки
         </div>
@@ -19,4 +32,8 @@
     {{ form_end(form) }}
 
 </div>  
-{% endblock %}  
+{% endblock %}
+{% block js %}
+    {{ parent() }}
+    {{ block('jsinit') }}
+{% endblock %}

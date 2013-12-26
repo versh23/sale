@@ -45,7 +45,7 @@
             <div class="row">
                 <div class="col-lg-12">
                     {% autoescape false %}
-                        {{ page.custom_text|default('Текст для главной страницы не заполнен') }}
+                        {{ house.custom_text|default('Текст для дома не заполнен') }}
                     {% endautoescape %}
                 </div>
             </div><!-- /.row -->
@@ -54,7 +54,7 @@
 
     </div>
 
-{% for house in houses %}
+{% for ap in apartments %}
 
     <div class="">
 
@@ -63,7 +63,9 @@
             <div class="row">
 
                 <div class="col-lg-6 col-md-6 col-sm-6">
-                    <h2><a href="{{ url('house.show', {id: house.id}) }}">{{ house.name }}</a></h2>
+                    <h2><a href="#">
+                            {{ ap.hname }}, {{ ap.adr }} - {{ ap.cnt_room }} комнат(ы)
+                        </a></h2>
 
                     <table class="table table-hover">
                         <tr>
@@ -83,14 +85,6 @@
                             </td>
                         </tr>
                         <tr>
-                            <td>Этажей</td>
-                            <td>{{ house.floor }}</td>
-                        </tr>
-                        <tr>
-                            <td>Кол-во квартир</td>
-                            <td>{{ house.count_apartments }}</td>
-                        </tr>
-                        <tr>
                             <td>Дата сдачи</td>
                             <td>{{ house.deliverydate }}</td>
                         </tr>
@@ -99,16 +93,23 @@
                             <td>{{ house.distance }}</td>
                         </tr>
                         <tr>
-                            <td>Кол-во подъездов</td>
-                            <td>{{ house.count_pod }}</td>
+                            <td>Кол-во комнат</td>
+                            <td>{{ ap.cnt_room }}</td>
                         </tr>
-
+                        <tr>
+                            <td>Площадь</td>
+                            <td>{{ ap.square }}</td>
+                        </tr>
+                        <tr>
+                            <td>Цена</td>
+                            <td>{{ ap.cost }}</td>
+                        </tr>
                     </table>
 
                 </div>
                 <div class="col-lg-6 col-md-6 col-sm-6">
                     <!--700x450-->
-                    <img class="img-responsive" src="{{ getThumb(houseImages[house.id][0], 700, 450, 'outbound') }}">
+                    <img class="img-responsive" src="{{ getThumb(apartmentImages[ap.id][0], 700, 450, 'outbound') }}">
                 </div>
             </div><!-- /.row -->
 

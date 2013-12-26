@@ -38,6 +38,7 @@
         {{ form_row(form.deliverydate) }}
         {{ form_row(form.distance) }}
         {{ form_row(form.count_pod) }}
+        {{ form_row(form.custom_text) }}
         <div class="form-group">
             <label class="control-label">Фотоальбом типа</label>
 
@@ -60,4 +61,10 @@
 {% block js %}
     {{ parent() }}
     {{ block('jsinit') }}
+    <script src="/plugins/ckeditor/ckeditor.js"></script>
+    <script>
+        CKEDITOR.replace( 'form_custom_text',{
+            filebrowserImageUploadUrl: '{{ url('upload.Do', {type: 'ck'}) }}'
+        });
+    </script>
 {% endblock %}
