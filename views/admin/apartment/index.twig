@@ -9,7 +9,7 @@
         <ul class="list-group">
             {% for apartment in apartments %}
                 <li class="list-group-item">
-                    {{ apartment.id }}
+                    {{ apartment.hname }}, {{ apartment.adr }} - {{ apartment.cnt_room }} комнат(ы)
                     <div class="pull-right btn-group">
                         <a href="{{ path('adminApartment.Edit', {id: apartment.id}) }}" type="button"
                            class="btn btn-warning">Изменить</a>

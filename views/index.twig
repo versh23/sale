@@ -38,15 +38,15 @@
         </div>
     </div>
 
-    <div class="section-colored text-center">
+    <div class="text-center" style="padding-bottom: 30px;">
 
         <div class="container">
 
             <div class="row">
                 <div class="col-lg-12">
-                    <h2>Рекламныый текст - заголовк</h2>
-                    <p>Рекламный текст - подробный</p>
-                    <hr>
+                    {% autoescape false %}
+                        {{ page.custom_text|default('Текст для главной страницы не заполнен') }}
+                    {% endautoescape %}
                 </div>
             </div><!-- /.row -->
 
@@ -56,7 +56,7 @@
 
 {% for house in houses %}
 
-    <div class="section-colored">
+    <div class="">
 
         <div class="container">
 

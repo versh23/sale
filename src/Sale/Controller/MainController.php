@@ -48,7 +48,7 @@ class MainController implements ControllerProviderInterface
             if(!is_null($page)){
                 $id = $page['id'];
             }
-            $images = $app['model.file']->getForType(PageModel::OBJECT_TYPE, 'main');
+            $images = $app['model.file']->getForType(HouseModel::OBJECT_TYPE, null);
 
 
             //Дома

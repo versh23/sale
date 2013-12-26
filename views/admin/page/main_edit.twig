@@ -1,9 +1,7 @@
 {% extends 'admin/layout.twig' %}
 {% block title %} Админка | Настройка главной {% endblock %}
-{% use 'admin/file/init.twig' %}
 {% block css %}
     {{ parent() }}
-    {{ block('cssinit') }}
 {% endblock %}
 
 {% block content %}
@@ -13,14 +11,8 @@
     {{ form_row(form.sitename) }}
     {{ form_row(form.description) }}
     {{ form_row(form.keywords) }}
+    {{ form_row(form.custom_text) }}
 
-    <div class="form-group">
-        <label class="control-label">Фото для слайдера</label>
-
-        <div class="controls">
-            {{ block('filefield') }}
-        </div>
-    </div>
     <div class="form-group">
         <style type="text/css">
             #YMapsID {
@@ -37,6 +29,12 @@
 
 {% block js %}
     {{ parent() }}
+    <script src="/plugins/ckeditor/ckeditor.js"></script>
+    <script>
+        CKEDITOR.replace( 'form_custom_text',{
+            filebrowserImageUploadUrl: '{{ url('upload.Do', {type: 'ck'}) }}'
+        });
+    </script>
     <script src="//api-maps.yandex.ru/2.1.3/?lang=ru-RU&load=package.full" type="text/javascript"></script>
     <script>
         var myMap, searchControl;
@@ -103,5 +101,4 @@
 
         });
     </script>
-    {{ block('jsinit') }}
 {% endblock %}

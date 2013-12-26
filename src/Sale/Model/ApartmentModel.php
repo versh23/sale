@@ -31,7 +31,7 @@ class ApartmentModel extends AbstractModel
 
     public function getWithHouseName(){
         $qb = $this->db->createQueryBuilder();
-        $qb->select('a.id as aid, h.name as hname')
+        $qb->select('a.id as aid, a.*,  h.name as hname, h.address as adr')
             ->from($this->getTable(), 'a')
             ->innerJoin('a', $this->app['model.house']->getTable(),'h', 'h.id = a.house_id')
            ;

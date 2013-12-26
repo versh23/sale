@@ -41,13 +41,23 @@ class FileModel extends AbstractModel
     }
 
     public function getForType($type, $id){
-        return $this->db->fetchAll(
-            'select * from ' . $this->getTable() . ' where object_type = :type and object_id = :id',
-            [
-                'type'=>$type,
-                'id'=>$id,
-            ]
-        );
+        if(is_null($id)){
+            return $this->db->fetchAll(
+                'select * from ' . $this->getTable() . ' where object_type = :type',
+                [
+                    'type'=>$type,
+                ]
+            );
+        }else{
+            return $this->db->fetchAll(
+                'select * from ' . $this->getTable() . ' where object_type = :type and object_id = :id',
+                [
+                    'type'=>$type,
+                    'id'=>$id,
+                ]
+            );
+        }
+
     }
 
     public function fullRemove($img){

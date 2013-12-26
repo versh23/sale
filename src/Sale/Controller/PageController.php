@@ -86,19 +86,15 @@ class PageController implements ControllerProviderInterface
             }
 
             $form = $this->getMainForm($page);
-            $images = $app['model.file']->getForType(PageModel::OBJECT_TYPE, 'main');
 
             $form->handleRequest($request);
             if($form->isValid()){
                 $page = $form->getData();
-                $files = $request->get('files');
 
                 if(!is_null($id)){
                     $app['model.settings']->update($id, $page);
-                    $app['model.page']->updateFiles('main', $files, $images);
                 }else{
                     $app['model.settings']->insert($page);
-                    $app['model.page']->addFiles($files, 'main');
                 }
 
                 return $app->redirect($app->url('adminPage.Index'));
@@ -107,7 +103,6 @@ class PageController implements ControllerProviderInterface
             return $app->render('admin/page/main_edit.twig', [
                 'page' => $page,
                 'form'  =>  $form->createView(),
-                'images'    =>  $images
             ]);
         })->bind('adminPage.mainEdit');
 
@@ -146,6 +141,12 @@ class PageController implements ControllerProviderInterface
                 'constraints'   =>  [
                 ]
             ])
+            ->add('custom_text', 'textarea',[
+                'label'=>'Контент на главной',
+                'constraints'   =>  [
+                    new Assert\NotBlank(),
+                ]
+            ])
             ->add('save', 'submit', ['label'=>'Сохранить'])
 
             ->getForm();
@@ -175,7 +176,7 @@ class PageController implements ControllerProviderInterface
             ->add('content', 'textarea',[
                 'label'=>'Контент',
                 'constraints'   =>  [
-//                    new Assert\NotBlank(),
+                    new Assert\NotBlank(),
                 ]
             ])
             ->add('save', 'submit', ['label'=>(is_null($data)) ? 'Добавить' : 'Сохранить'])

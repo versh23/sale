@@ -22,6 +22,7 @@ class SettingsModel extends AbstractModel
         $settingsTable->addColumn('keywords', 'text');
         $settingsTable->addColumn('address', 'string');
         $settingsTable->addColumn('latlon', 'string');
+        $settingsTable->addColumn('custom_text', 'text');
 
         return $settingsTable;
     }

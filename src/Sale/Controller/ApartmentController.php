@@ -26,7 +26,7 @@ class ApartmentController implements ControllerProviderInterface
         $controllers = $app['controllers_factory'];
 
         $controllers->get('/', function () use ($app) {
-            $apartments = $app['model.apartment']->getAll();
+            $apartments = $app['model.apartment']->getWithHouseName();
             return $app->render('admin/apartment/index.twig', [
                 'apartments' => $apartments
             ]);
