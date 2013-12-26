@@ -5,6 +5,7 @@ use Sale\Controller\HouseController;
 use Sale\Controller\MainController;
 use Sale\Controller\PageController;
 use Sale\Controller\SalesController;
+use Sale\Controller\SearchController;
 use Sale\Controller\SnippetController;
 use Sale\Controller\UploadController;
 use Symfony\Component\HttpFoundation\Request;
@@ -49,6 +50,7 @@ $app->mount('/admin/snippet', new SnippetController());
 $app->mount('/admin/sales', new SalesController());
 $app->mount('/admin/page', new PageController());
 $app->mount('/upload', new UploadController());
+$app->mount('/search', new SearchController());
 $app->mount('/', new MainController());
 
 

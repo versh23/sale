@@ -27,6 +27,9 @@
                 <li {% if mainMenu == 'main' %}class="active"{% endif %}>
                     <a href="{{ path('main') }}">Главная</a>
                 </li>
+                <li {% if mainMenu == 'search.Index' %}class="active"{% endif %}>
+                    <a href="{{ path('search.Index') }}">Подобрать</a>
+                </li>
                 <li {% if mainMenu == 'about' %}class="active"{% endif %}>
                     <a href="{{ path('about') }}">О нас</a>
                 </li>

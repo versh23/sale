@@ -41,6 +41,9 @@ class HouseModel extends AbstractModel
         $houseTable->addColumn('count_2', 'integer');
         $houseTable->addColumn('count_3', 'integer');
 
+        $houseTable->addColumn('count_pod', 'integer');
+        $houseTable->addColumn('distance', 'integer');
+
         return $houseTable;
     }
 

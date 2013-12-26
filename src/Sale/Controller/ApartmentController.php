@@ -125,6 +125,13 @@ class ApartmentController implements ControllerProviderInterface
                     new Assert\Type('int')
                 ]
             ])
+            ->add('cost', 'integer',[
+                'label'=>'Цена',
+                'constraints'   =>  [
+                    new Assert\NotBlank(),
+                    new Assert\Type('int')
+                ]
+            ])
             ->add('save', 'submit', ['label'=>(is_null($data)) ? 'Добавить' : 'Сохранить'])
 
             ->getForm();

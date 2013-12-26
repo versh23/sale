@@ -21,7 +21,13 @@ class SalesModel extends AbstractModel
         $salesTable->addForeignKeyConstraint($this->app['model.apartment']->getTable(), ['apartment_id'], ['id'], ['onDelete' => 'CASCADE']);
 
         $salesTable->addColumn('ap_number', 'integer');
+        $salesTable->addColumn('ap_pod', 'integer');
+        $salesTable->addColumn('ap_floor', 'integer');
         $salesTable->addColumn('fio', 'string');
+        $salesTable->addColumn('address', 'string');
+        $salesTable->addColumn('passport', 'string');
+        $salesTable->addColumn('phone', 'string');
+        $salesTable->addColumn('dogovor', 'string');
 
         return $salesTable;
     }

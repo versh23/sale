@@ -1,0 +1,109 @@
+{% extends 'layout.twig' %}
+{% block title %}
+    Поиск
+{% endblock %}
+{% block css %}
+    {{ parent() }}
+{% endblock %}
+{% block body %}
+<div class="row">
+    {#<div class="col-md-4">
+        <div class="panel panel-default">
+            <div class="panel-heading">Параметры поиска</div>
+            <div class="panel-body">
+                Кол-во комнат
+            </div>
+        </div>
+    </div>#}
+    <div class="col-md-12">
+        {#<div class="list-group">
+            <a href="#" class="list-group-item">
+                Дом такой, квартира такая
+            </a>
+            <a href="#" class="list-group-item">
+                Дом такой, квартира такая
+            </a>
+            <a href="#" class="list-group-item">
+                Дом такой, квартира такая
+            </a>
+
+        </div>#}
+
+        <table style="width: 100%;text-align: center;" border="1">
+            <tr>
+                <td>
+                <div>
+                    №1 - <div class="badge">1</div>
+                </div>
+                </td>
+                <td>2</td>
+                <td>3</td>
+                <td>4</td>
+            </tr>
+            <tr>
+                <td>5</td>
+                <td>6</td>
+                <td>7</td>
+                <td>8</td>
+            </tr>
+            <tr>
+                <td>9</td>
+                <td>1</td>
+                <td>2</td>
+                <td>3</td>
+            </tr>
+            <tr>
+                <td>4</td>
+                <td>5</td>
+                <td>6</td>
+                <td>7</td>
+            </tr>
+            <tr>
+                <td>8</td>
+                <td>9</td>
+                <td>1</td>
+                <td>2</td>
+            </tr>
+            <tr>
+                <td>3</td>
+                <td>4</td>
+                <td>5</td>
+                <td>6</td>
+            </tr>
+            <tr>
+                <td>7</td>
+                <td>8</td>
+                <td>9</td>
+                <td>0</td>
+            </tr>
+            <tr>
+                <td>1</td>
+                <td>2</td>
+                <td>3</td>
+                <td>4</td>
+            </tr>
+            <tr>
+                <td>5</td>
+                <td>6</td>
+                <td>7</td>
+                <td>8</td>
+            </tr>
+            <tr>
+                <td>9</td>
+                <td>9</td>
+                <td>8</td>
+                <td>7</td>
+            </tr>
+        </table>
+    </div>
+</div>
+
+
+
+{% endblock %}
+
+{% block js %}
+    {{ parent() }}
+
+{% endblock %}
+

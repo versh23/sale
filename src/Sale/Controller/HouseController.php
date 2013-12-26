@@ -163,6 +163,21 @@ class HouseController implements ControllerProviderInterface
                     new Assert\NotBlank()
                 ]
             ])
+
+            ->add('count_pod', 'integer',[
+                'label'=>'Кол-во подъездов',
+                'constraints'   =>  [
+                    new Assert\NotBlank()
+                ]
+            ])
+            ->add('distance', 'integer',[
+                'label'=>'Расстояние от центра, м.',
+                'constraints'   =>  [
+                    new Assert\NotBlank()
+                ]
+            ])
+
+
             ->add('save', 'submit', ['label'=>(is_null($data)) ? 'Добавить' : 'Сохранить'])
 
             ->getForm();

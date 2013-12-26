@@ -88,6 +88,24 @@ class SalesController implements ControllerProviderInterface
                     new Assert\NotBlank()
                 ]
             ])
+            ->add('ap_pod', 'integer', [
+                'label'=>'Номер подъезда',
+                'constraints'   =>  [
+                    new Assert\NotBlank()
+                ]
+            ])
+            ->add('ap_floor', 'integer', [
+                'label'=>'Этаж',
+                'constraints'   =>  [
+                    new Assert\NotBlank()
+                ]
+            ])
+            ->add('dogovor', 'text', [
+                'label'=>'Договор',
+                'constraints'   =>  [
+                    new Assert\NotBlank()
+                ]
+            ])
             ->add('apartment_id', 'choice', [
                 'label'=>'Тип квартиры',
                 'choices'   => $normalList
@@ -98,6 +116,25 @@ class SalesController implements ControllerProviderInterface
                     new Assert\NotBlank()
                 ]
             ])
+            ->add('passport', 'text', [
+                'label'=>'Паспортные данные',
+                'constraints'   =>  [
+                    new Assert\NotBlank()
+                ]
+            ])
+            ->add('phone', 'text', [
+                'label'=>'Телефон',
+                'constraints'   =>  [
+                    new Assert\NotBlank()
+                ]
+            ])
+            ->add('address', 'text', [
+                'label'=>'Адрес проживание',
+                'constraints'   =>  [
+                    new Assert\NotBlank()
+                ]
+            ])
+
             ->add('save', 'submit', ['label'=>(is_null($data)) ? 'Добавить' : 'Сохранить'])
 
             ->getForm();
