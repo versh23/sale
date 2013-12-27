@@ -47,15 +47,17 @@ class MainController implements ControllerProviderInterface
 
             //Дома
             $houses = $app['model.house']->getAll();
-            $houseImages = [];
+            $houseImages = $houseSnippets = [];
             foreach($houses as $house){
                 $houseImages[$house['id']] = $app['model.file']->getForType(HouseModel::OBJECT_TYPE, $house['id']);
+                $houseSnippets[$house['id']] = $app['model.house']->getSnippetsRows($house['id']);
             }
 
             return $app->render('index.twig', [
                 'images'=>$images,
                 'houses'=>$houses,
                 'houseImages'=>$houseImages,
+                'houseSnippets'=>$houseSnippets,
             ]);
         })
             ->bind('main');
@@ -68,14 +70,17 @@ class MainController implements ControllerProviderInterface
             $apartments = $app['model.apartment']->getWithHouseName($id);
             $house = $app['model.house']->get($id);
 
-            $apartmentImages = [];
+            $apartmentImages = $apartmentSnippets = [];
             foreach($apartments as $apartment){
                 $apartmentImages[$apartment['id']] = $app['model.file']->getForType(ApartmentModel::OBJECT_TYPE, $apartment['id']);
+                $apartmentSnippets[$apartment['id']] = $app['model.apartment']->getSnippetsRows($apartment['id']);
+
             }
             return $app->render('house.twig', [
                 'images'=>$images,
                 'apartments'=>$apartments,
                 'apartmentImages'=>$apartmentImages,
+                'apartmentSnippets'         => $apartmentSnippets,
                 'house'         => $house
             ]);
         })
@@ -87,12 +92,16 @@ class MainController implements ControllerProviderInterface
 
             $apartment = $app['model.apartment']->get($id);
             $house = $app['model.house']->get($apartment['house_id']);
+            $apartmentSnippets = [];
+            $apartmentSnippets[$apartment['id']] = $app['model.apartment']->getSnippetsRows($apartment['id']);
 
 
             return $app->render('apartment.twig', [
                 'images'=>$images,
                 'apartment' =>  $apartment,
-                'house'=>$house
+                'house'=>$house,
+                'apartmentSnippets'         => $apartmentSnippets,
+
             ]);
         })
             ->bind('apartment.show');

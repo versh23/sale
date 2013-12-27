@@ -102,7 +102,15 @@
                             <td>Кол-во подъездов</td>
                             <td>{{ house.count_pod }}</td>
                         </tr>
-
+                     <!-- доп признаки -->
+                        {% if houseSnippets[house.id] %}
+                            {% for k,v in houseSnippets[house.id] %}
+                                <tr>
+                                    <td>{{ k }}</td>
+                                    <td>{{ v|join(', ') }}</td>
+                                </tr>
+                            {% endfor %}
+                        {% endif %}
                     </table>
 
                 </div>

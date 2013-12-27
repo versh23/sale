@@ -1,6 +1,8 @@
 <?php
 namespace Sale\Model;
 
+use Doctrine\DBAL\Query\QueryBuilder;
+
 trait SnippetTrait
 {
 
@@ -12,6 +14,28 @@ trait SnippetTrait
         $object['snippets'] = $this->getSnippets($id);
 
         return $object;
+    }
+
+    public function getSnippetsRows($id){
+        /**
+         * @var QueryBuilder $qb;
+         */
+        $qb = $this->db->createQueryBuilder();
+
+        $qb->select('s.id, s.label, sv.name, svm.*')
+            ->from('snippet_value_match', 'svm')
+            ->innerJoin('svm', 'snippet_value', 'sv', 'sv.id = svm.snippet_value_id')
+            ->innerJoin('sv', 'snippet', 's', 's.id = sv.snippet_id')
+            ->where('svm.object_id = :oid')
+            ->andWhere('s.to_object = :type')
+            ->setParameter('type', $this::OBJECT_TYPE)->setParameter('oid', $id);
+        $res = $qb->execute()->fetchAll();
+        $out = [];
+        foreach($res as $row){
+            $out[$row['label']][] = $row['name'];
+        }
+
+        return $out;
     }
 
     private function getSnippets($id)
@@ -53,10 +77,14 @@ trait SnippetTrait
                 //Это update ?
                 if (isset($normalNewSnippets[$osn['sysname']])) {
                     if ($normalNewSnippets[$osn['sysname']]['type'] == SnippetModel::TYPE_SINGLE) {
+
                         $sysval = array_pop($normalNewSnippets[$osn['sysname']]['values']);
+                        $_snippetValue = $normalNewSnippets[$osn['sysname']]['map_valueId'][$sysval];
+
                         $updates[] = [
                             'data' => [
                                 'sysval' => $sysval,
+                                'snippet_value_id'=>$_snippetValue
                             ],
                             'where' => [
                                 'object_type' => $this::OBJECT_TYPE,

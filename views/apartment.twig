@@ -81,6 +81,15 @@
                             <td>Цена</td>
                             <td>{{ apartment.cost }}</td>
                         </tr>
+                        <!-- доп признаки -->
+                        {% if apartmentSnippets[apartment.id] %}
+                            {% for k,v in apartmentSnippets[apartment.id] %}
+                                <tr>
+                                    <td>{{ k }}</td>
+                                    <td>{{ v|join(', ') }}</td>
+                                </tr>
+                            {% endfor %}
+                        {% endif %}
                     </table>
 
                 </div>
