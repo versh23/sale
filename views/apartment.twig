@@ -43,30 +43,7 @@
         <div class="container">
 
             <div class="row">
-                <div class="col-lg-12">
-                    {% autoescape false %}
-                        {{ house.custom_text|default('Текст для дома не заполнен') }}
-                    {% endautoescape %}
-                </div>
-            </div><!-- /.row -->
-
-        </div><!-- /.container -->
-
-    </div>
-
-{% for ap in apartments %}
-
-    <div class="">
-
-        <div class="container">
-
-            <div class="row">
-
-                <div class="col-lg-6 col-md-6 col-sm-6">
-                    <h2><a href="{{ url('apartment.show', {id : ap.id}) }}">
-                            {{ ap.hname }}, {{ ap.adr }} - {{ ap.cnt_room }} комнат(ы)
-                        </a></h2>
-
+                <div class="col-lg-6 col-md-offset-3">
                     <table class="table table-hover">
                         <tr>
                             <td>Адрес</td>
@@ -94,29 +71,31 @@
                         </tr>
                         <tr>
                             <td>Кол-во комнат</td>
-                            <td>{{ ap.cnt_room }}</td>
+                            <td>{{ apartment.cnt_room }}</td>
                         </tr>
                         <tr>
                             <td>Площадь</td>
-                            <td>{{ ap.square }}</td>
+                            <td>{{ apartment.square }}</td>
                         </tr>
                         <tr>
                             <td>Цена</td>
-                            <td>{{ ap.cost }}</td>
+                            <td>{{ apartment.cost }}</td>
                         </tr>
                     </table>
 
                 </div>
-                <div class="col-lg-6 col-md-6 col-sm-6">
-                    <!--700x450-->
-                    <img class="img-responsive" src="{{ getThumb(apartmentImages[ap.id][0], 700, 450, 'outbound') }}">
-                </div>
             </div><!-- /.row -->
-
+            <div class="row">
+                <div class="col-md-12">
+                    {% autoescape false %}
+                    {{ apartment.custom_text|default('Текст для квартиры не заполнен') }}
+                    {% endautoescape %}
+                </div>
+            </div>
         </div><!-- /.container -->
 
     </div>
-{% endfor %}
+
 
 
 

@@ -86,14 +86,20 @@ class PageController implements ControllerProviderInterface
             }
 
             $form = $this->getMainForm($page);
+            $images = $app['model.file']->getForType(PageModel::OBJECT_TYPE, 'main');
 
             $form->handleRequest($request);
             if($form->isValid()){
                 $page = $form->getData();
+                $files = $request->get('files');
+
 
                 if(!is_null($id)){
                     $app['model.settings']->update($id, $page);
+                    $app['model.page']->updateFiles('main', $files, $images);
+
                 }else{
+                    $app['model.page']->addFiles($files, 'main');
                     $app['model.settings']->insert($page);
                 }
 

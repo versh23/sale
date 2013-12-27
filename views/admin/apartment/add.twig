@@ -15,6 +15,7 @@
     {{ form_row(form.cnt_room) }}
     {{ form_row(form.square) }}
     {{ form_row(form.cost) }}
+    {{ form_row(form.custom_text) }}
     <div class="form-group">
         <label class="control-label">Фотоальбом типа</label>
 
@@ -36,4 +37,10 @@
 {% block js %}
     {{ parent() }}
     {{ block('jsinit') }}
+    <script src="/plugins/ckeditor/ckeditor.js"></script>
+    <script>
+        CKEDITOR.replace( 'form_custom_text',{
+            filebrowserImageUploadUrl: '{{ url('upload.Do', {type: 'ck'}) }}'
+        });
+    </script>
 {% endblock %}

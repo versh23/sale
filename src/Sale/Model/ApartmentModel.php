@@ -26,6 +26,7 @@ class ApartmentModel extends AbstractModel
         $apartmentTable->addColumn('cnt_room', 'integer');
         $apartmentTable->addColumn('square', 'integer');
         $apartmentTable->addColumn('cost', 'integer');
+        $apartmentTable->addColumn('custom_text', 'text');
 
         return $apartmentTable;
     }

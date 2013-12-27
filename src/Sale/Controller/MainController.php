@@ -49,7 +49,7 @@ class MainController implements ControllerProviderInterface
             if(!is_null($page)){
                 $id = $page['id'];
             }
-            $images = $app['model.file']->getForType(HouseModel::OBJECT_TYPE, null);
+            $images = $app['model.file']->getForType(PageModel::OBJECT_TYPE, 'main');
 
             //Дома
             $houses = $app['model.house']->getAll();
@@ -75,7 +75,7 @@ class MainController implements ControllerProviderInterface
             if(!is_null($page)){
                 $id = $page['id'];
             }
-            $images = $app['model.file']->getForType(ApartmentModel::OBJECT_TYPE, null);
+            $images = $app['model.file']->getForType(HouseModel::OBJECT_TYPE, $id);
 
             //Квартиры
             $apartments = $app['model.apartment']->getWithHouseName($id);
@@ -102,22 +102,17 @@ class MainController implements ControllerProviderInterface
             if(!is_null($page)){
                 $id = $page['id'];
             }
-            $images = $app['model.file']->getForType(ApartmentModel::OBJECT_TYPE, null);
+            $images = $app['model.file']->getForType(ApartmentModel::OBJECT_TYPE, $id);
 
-            //Квартиры
-            $apartments = $app['model.apartment']->getWithHouseName($id);
-            $house = $app['model.house']->get($id);
+            $apartment = $app['model.apartment']->get($id);
+            $house = $app['model.house']->get($apartment['house_id']);
 
-            $apartmentImages = [];
-            foreach($apartments as $apartment){
-                $apartmentImages[$apartment['id']] = $app['model.file']->getForType(ApartmentModel::OBJECT_TYPE, $apartment['id']);
-            }
-            return $app->render('house.twig', [
+
+            return $app->render('apartment.twig', [
                 'page'=>$page,
                 'images'=>$images,
-                'apartments'=>$apartments,
-                'apartmentImages'=>$apartmentImages,
-                'house'         => $house
+                'apartment' =>  $apartment,
+                'house'=>$house
             ]);
         })
             ->bind('apartment.show');
