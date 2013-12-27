@@ -43,12 +43,6 @@ class MainController implements ControllerProviderInterface
 
         $controllers->get('/', function() use($app) {
 
-            $page = $app['model.settings']->getAll();
-            $page = (count($page)) ? array_pop($page) : null;
-            $id = null;
-            if(!is_null($page)){
-                $id = $page['id'];
-            }
             $images = $app['model.file']->getForType(PageModel::OBJECT_TYPE, 'main');
 
             //Дома
@@ -59,7 +53,6 @@ class MainController implements ControllerProviderInterface
             }
 
             return $app->render('index.twig', [
-                'page'=>$page,
                 'images'=>$images,
                 'houses'=>$houses,
                 'houseImages'=>$houseImages,
@@ -69,12 +62,6 @@ class MainController implements ControllerProviderInterface
 
         $controllers->get('/house/{id}', function($id) use($app) {
 
-            $page = $app['model.settings']->getAll();
-            $page = (count($page)) ? array_pop($page) : null;
-            $id = null;
-            if(!is_null($page)){
-                $id = $page['id'];
-            }
             $images = $app['model.file']->getForType(HouseModel::OBJECT_TYPE, $id);
 
             //Квартиры
@@ -86,7 +73,6 @@ class MainController implements ControllerProviderInterface
                 $apartmentImages[$apartment['id']] = $app['model.file']->getForType(ApartmentModel::OBJECT_TYPE, $apartment['id']);
             }
             return $app->render('house.twig', [
-                'page'=>$page,
                 'images'=>$images,
                 'apartments'=>$apartments,
                 'apartmentImages'=>$apartmentImages,
@@ -96,12 +82,7 @@ class MainController implements ControllerProviderInterface
             ->bind('house.show');
         $controllers->get('/apartment/{id}', function($id) use($app) {
 
-            $page = $app['model.settings']->getAll();
-            $page = (count($page)) ? array_pop($page) : null;
-            $id = null;
-            if(!is_null($page)){
-                $id = $page['id'];
-            }
+
             $images = $app['model.file']->getForType(ApartmentModel::OBJECT_TYPE, $id);
 
             $apartment = $app['model.apartment']->get($id);
@@ -109,7 +90,6 @@ class MainController implements ControllerProviderInterface
 
 
             return $app->render('apartment.twig', [
-                'page'=>$page,
                 'images'=>$images,
                 'apartment' =>  $apartment,
                 'house'=>$house
@@ -117,14 +97,8 @@ class MainController implements ControllerProviderInterface
         })
             ->bind('apartment.show');
         $controllers->get('/about', function() use($app) {
-            $page = $app['model.settings']->getAll();
-            $page = (count($page)) ? array_pop($page) : null;
-            $id = null;
-            if(!is_null($page)){
-                $id = $page['id'];
-            }
+
             return $app->render('about.twig', [
-                'page'  =>  $page
             ]);
         })
             ->bind('about');

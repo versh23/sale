@@ -21,6 +21,10 @@ $app = require __DIR__ . '/../src/app.php';
 
 $app->before(function (Request $request) use ($app) {
 
+    //get settings
+    $page = $app['model.settings']->getAll();
+    $page = (count($page)) ? array_pop($page) : null;
+    $app['twig']->addGlobal('page', $page);
 
     $route = $request->get('_route');
 
