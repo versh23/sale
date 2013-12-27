@@ -1,6 +1,6 @@
 {% extends 'layout.twig' %}
 {% block title %}
-    {{ page.title }}
+    {{ page.sitename }} | О нас
 {% endblock %}
 {% block css %}
     {{ parent() }}
@@ -11,8 +11,18 @@
         <div id="map" style="height:300px"></div>
     </div>
     <div class="col-md-4">
-        Время работы и что еще?
-        телефоны там
+        <p>
+            <span class="glyphicon glyphicon-phone-alt"></span>
+            Телефон: {{ page.telephone }}
+        </p>
+        <p>
+            <span class="glyphicon glyphicon-time"></span>
+            Время работы: {{ page.worktime }}
+        </p>
+        <p>
+            <span class="glyphicon glyphicon-home"></span>
+            Адресс: {{ page.address }}
+        </p>
     </div>
 </div>
 

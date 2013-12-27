@@ -103,10 +103,11 @@ class PageController implements ControllerProviderInterface
                     $app['model.settings']->insert($page);
                 }
 
-                return $app->redirect($app->url('adminPage.Index'));
+                return $app->redirect($app->url('adminIndex'));
             }
 
             return $app->render('admin/page/main_edit.twig', [
+                'images' => $images,
                 'page' => $page,
                 'form'  =>  $form->createView(),
             ]);
@@ -153,6 +154,20 @@ class PageController implements ControllerProviderInterface
                     new Assert\NotBlank(),
                 ]
             ])
+
+            ->add('worktime', 'text',[
+                'label'=>'Время работы',
+                'constraints'   =>  [
+                    new Assert\NotBlank(),
+                ]
+            ])
+            ->add('telephone', 'text',[
+                'label'=>'Телефон',
+                'constraints'   =>  [
+                    new Assert\NotBlank(),
+                ]
+            ])
+
             ->add('save', 'submit', ['label'=>'Сохранить'])
 
             ->getForm();

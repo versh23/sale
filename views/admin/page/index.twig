@@ -2,14 +2,7 @@
 {% block title %} Админка | Страницы {% endblock %}
 {% block content %}
     <div class="col-sm-8 col-md-8">
-        <div class="row">
-            <div class="col-md-4">
-                <p><a class="btn pull-right btn-success" href="{{ path('adminPage.mainEdit') }}">Общие настройки</a></p>
-            </div>
-            <div class="col-md-8">
-                <p><a class="btn pull-right btn-success" href="{{ path('adminPage.Add') }}">Добавить</a></p>
-            </div>
-        </div>
+        <p><a class="btn pull-right btn-success" href="{{ path('adminPage.Add') }}">Добавить</a></p>
         <div class="clearfix"></div>
         <p></p>
         <ul class="list-group">
