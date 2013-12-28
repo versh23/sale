@@ -47,5 +47,117 @@ class ApartmentModel extends AbstractModel
         return 'apartment';
     }
 
+    public function search($filters){
 
+        $qb = $this->db->createQueryBuilder();
+        $qb->select('a.id as aid, a.*,  h.name as hname, h.address as adr')
+            ->from($this->getTable(), 'a')
+            ->innerJoin('a', $this->app['model.house']->getTable(),'h', 'h.id = a.house_id')
+        ;
+        if(isset($filters['cost']) && $filters['cost'] != ''){
+            $cost = $filters['cost'];
+            if(isset($cost['from']) && $cost['from'] != ''){
+                $qb->andWhere('a.cost >= :from')->setParameter('from', $cost['from']);
+            }
+            if(isset($cost['to']) && $cost['to'] != ''){
+                $qb->andWhere('a.cost <= :to')->setParameter('to', $cost['to']);
+            }
+        }
+        if(isset($filters['cnt_room']) && $filters['cnt_room'] != ''){
+            $cnt_room = $filters['cnt_room'];
+            $qb->andWhere('a.cnt_room = :cnt_room', $cnt_room)->setParameter('cnt_room', $cnt_room);
+        }
+        if(isset($filters['floor']) && $filters['floor'] != ''){
+            $floor = $filters['floor'];
+            $qb->andWhere('h.floor = :floor', $floor)->setParameter('floor', $floor);
+        }
+        if(isset($filters['material']) && $filters['material'] != '' && $filters['material'] != 0){
+            $material = $filters['material'];
+            $qb->andWhere('h.material = :material', $material)->setParameter('material', $material);
+        }
+
+        if(isset($filters['withIds']) && $filters['withIds'] != '' && is_array($filters['withIds'])){
+            $ids = $filters['withIds'];
+            if(!count($ids)) return [];
+            $qb->andWhere('a.id in (' . implode(', ', $ids) . ')');
+        }
+
+
+        return $qb->execute()->fetchAll();
+
+    }
+
+    public function getIdsBySnippets($snippets){
+        $aids = $apIds = $hIds = [];
+        $hasSnippet = false;
+        $qb = $this->db->createQueryBuilder();
+        $qb->select('svm.*')
+            ->from('snippet_value_match', 'svm')
+            ;
+        if(isset($snippets['house']) && is_array($snippets['house'])){
+            $hSnippet = $snippets['house'];
+            foreach($hSnippet as $sysname=>$sysval){
+                if(is_array($sysval)){
+                    $imploder = '';
+                    foreach($sysval as $sv){
+                        $imploder .= "'$sv',";
+                    }
+                    $qb->andWhere("(svm.sysname = '$sysname' AND svm.sysval in (" . substr($imploder, 0, strlen($imploder) - 1) . "))");
+                }else{
+                    $qb->andWhere("(svm.sysname = '$sysname' AND svm.sysval = '$sysval')");
+
+                }
+            }
+            $qb->andWhere('svm.object_type = 1');
+
+            $res = $qb->execute()->fetchAll();
+            $ids = [];
+            foreach($res as $row){
+                $ids[] = $row['object_id'];
+            }
+            //Это ид домов. найдем ид комнат
+            if(count($ids)){
+               $res = $this->db->fetchAll('SELECT id FROM ' . $this->getTable() . ' where house_id in (' . implode(', ', $ids) . ')');
+               if(count($res)){
+                   foreach($res as $row){
+                       $hIds[$row['id']]= $row['id'];
+                   }
+               }
+            }
+            $qb->resetQueryPart('where');
+        }
+
+        if(isset($snippets['ap']) && is_array($snippets['ap'])){
+            $hSnippet = $snippets['ap'];
+            foreach($hSnippet as $sysname=>$sysval){
+                if(is_array($sysval)){
+                    $imploder = '';
+                    foreach($sysval as $sv){
+                        $imploder .= "'$sv',";
+                    }
+                    $qb->andWhere("(svm.sysname = '$sysname' AND svm.sysval in (" . substr($imploder, 0, strlen($imploder) - 1) . "))");
+                }else{
+                    $qb->andWhere("(svm.sysname = '$sysname' AND svm.sysval = '$sysval')");
+
+                }
+
+
+            }
+            $qb->andWhere('svm.object_type = 2');
+            $res = $qb->execute()->fetchAll();
+            if(count($res)){
+                foreach($res as $row){
+                    $apIds[$row['object_id']]= $row['object_id'];
+                }
+            }
+        }
+        if(count($hIds)){
+            $aids = array_intersect($apIds, $hIds);
+        }else{
+            $aids = $apIds;
+        }
+
+        return $aids;
+
+    }
 }

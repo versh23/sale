@@ -7,94 +7,180 @@
 {% endblock %}
 {% block body %}
 <div class="row">
-    {#<div class="col-md-4">
+    <div class="col-md-4">
         <div class="panel panel-default">
             <div class="panel-heading">Параметры поиска</div>
             <div class="panel-body">
-                Кол-во комнат
+                <form class="form-horizontal">
+                    <div class="form-group">
+                        <label class="col-md-5 control-label" for="">Кол-во комнат: </label>
+                        <div class="col-md-7">
+                            <input value="{{ filters['cnt_room'] }}" type="text" class="form-control" name="filter[cnt_room]"/>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-md-5 control-label" for="">Цена от: </label>
+                        <div class="col-md-7">
+                            <input value="{{ filters['cost']['from'] }}" type="text" class="form-control" name="filter[cost][from]"/>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-md-5 control-label" for="">Цена до: </label>
+                        <div class="col-md-7">
+                            <input value="{{ filters['cost']['to'] }}" type="text" class="form-control" name="filter[cost][to]"/>
+                        </div>
+                    </div>
+
+
+                    <div class="form-group">
+                        <label class="col-md-5 control-label" for="">Этажей в доме: </label>
+                        <div class="col-md-7">
+                            <input value="{{ filters['floor'] }}" type="text" class="form-control" name="filter[floor]"/>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-md-5 control-label" for="form_material">
+                            Тип материала
+                        </label>
+                        <div class="col-md-7">
+                            <select id="form_material" name="filter[material]" class="form-control">
+                                <option value="0" {% if filters['material'] == 0 %}selected="selected"{% endif %}>Любой</option>
+                                <option value="1" {% if filters['material'] == 1 %}selected="selected"{% endif %}>Панельный</option>
+                                <option value="2" {% if filters['material'] == 2 %}selected="selected"{% endif %}>Кирпичный</option>
+                                <option value="3" {% if filters['material'] == 3 %}selected="selected"{% endif %}>Монолитный</option>
+                            </select>
+                        </div>
+                    </div>
+
+
+                    {% for item in hSnippets %}
+                        <div class="form-group">
+                            <label class="col-md-5 control-label">{{ item.label }}</label>
+                            <div class="col-md-7">
+                                <div class="controls">
+                                    {% for val in item.values %}
+                                        {% if item.type == 1 %}
+                                            <div class="radio">
+                                                <label>
+                                                    <input {% if val.sysval in checked['house'][item.sysname] %} checked {% endif %} {% if loop.first and not checked %}checked{% endif %} name="snippet[house][{{ item.sysname }}]" value="{{ val.sysval }}" type="radio">{{ val.name }}
+                                                </label>
+                                            </div>
+                                        {% else %}
+                                            <div class="checkbox">
+                                                <label>
+                                                    <input {% if val.sysval in checked['house'][item.sysname] %} checked {% endif %} type="checkbox" name="snippet[house][{{ item.sysname }}][]" value="{{ val.sysval }}"> {{ val.name }}
+                                                </label>
+                                            </div>
+                                        {% endif %}
+                                    {% endfor %}
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+
+                    {% for item in aSnippets %}
+                        <div class="form-group">
+                            <label class="col-md-5 control-label">{{ item.label }}</label>
+                            <div class="col-md-7">
+                                <div class="controls">
+                                    {% for val in item.values %}
+                                        {% if item.type == 1 %}
+                                            <div class="radio">
+                                                <label>
+                                                    <input {% if val.sysval in checked['ap'][item.sysname] %} checked {% endif %} {% if loop.first and not checked %}checked{% endif %} name="snippet[ap][{{ item.sysname }}]" value="{{ val.sysval }}" type="radio">{{ val.name }}
+                                                </label>
+                                            </div>
+                                        {% else %}
+                                            <div class="checkbox">
+                                                <label>
+                                                    <input {% if val.sysval in checked['ap'][item.sysname] %} checked {% endif %} type="checkbox" name="snippet[ap][{{ item.sysname }}][]" value="{{ val.sysval }}"> {{ val.name }}
+                                                </label>
+                                            </div>
+                                        {% endif %}
+                                    {% endfor %}
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                    <div class="form-group">
+                        <div class="col-md-12">
+                            <button type="submit" class="btn btn-default">Найти</button>
+                        </div>
+                    </div>
+                </form>
             </div>
         </div>
-    </div>#}
-    <div class="col-md-12">
-        {#<div class="list-group">
-            <a href="#" class="list-group-item">
-                Дом такой, квартира такая
-            </a>
-            <a href="#" class="list-group-item">
-                Дом такой, квартира такая
-            </a>
-            <a href="#" class="list-group-item">
-                Дом такой, квартира такая
-            </a>
+    </div>
+    <div class="col-md-8">
+        <div class="list-group">
+            {% for ap in apartments %}
+                <div class="row" style="padding-bottom: 30px;">
+                    <div class="col-md-4">
+                        <img class="img-responsive" src="{{ getThumb(apartmentImages[ap.id][0], 700, 450, 'outbound') }}">
+                    </div>
+                    <div class="col-md-8">
+                        <a href="{{ url('apartment.show', {id : ap.id}) }}" class="list-group-item">
+                            {{ ap.hname }}, {{ ap.adr }}
+                        </a>
+                        <table class="table table-hover">
+                            <tr>
+                                <td>Адрес</td>
+                                <td>{{ apartmentHouse[ap.id].address }}</td>
+                            </tr>
+                            <tr>
+                                <td>Тип материала</td>
+                                <td>
+                                    {% if apartmentHouse[ap.id].material == 1 %}
+                                        Панельный
+                                    {% elseif(apartmentHouse[ap.id].material == 2) %}
+                                        Кирпичный
+                                    {% else %}
+                                        Монолитный
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Дата сдачи</td>
+                                <td>{{ apartmentHouse[ap.id].deliverydate }}</td>
+                            </tr>
+                            <tr>
+                                <td>Расстояние от центра, м.</td>
+                                <td>{{ apartmentHouse[ap.id].distance }}</td>
+                            </tr>
+                            <tr>
+                                <td>Кол-во комнат</td>
+                                <td>{{ ap.cnt_room }}</td>
+                            </tr>
+                            <tr>
+                                <td>Площадь</td>
+                                <td>{{ ap.square }}</td>
+                            </tr>
+                            <tr>
+                                <td>Цена</td>
+                                <td>{{ ap.cost }}</td>
+                            </tr>
+                            {% if apartmentSnippets[ap.id] %}
+                                {% for k,v in apartmentSnippets[ap.id] %}
+                                    <tr>
+                                        <td>{{ k }}</td>
+                                        <td>{{ v|join(', ') }}</td>
+                                    </tr>
+                                {% endfor %}
+                            {% endif %}
 
-        </div>#}
+                        </table>
+                    </div>
 
-        <table style="width: 100%;text-align: center;" border="1">
-            <tr>
-                <td>
-                <div>
-                    №1 - <div class="badge">1</div>
                 </div>
-                </td>
-                <td>2</td>
-                <td>3</td>
-                <td>4</td>
-            </tr>
-            <tr>
-                <td>5</td>
-                <td>6</td>
-                <td>7</td>
-                <td>8</td>
-            </tr>
-            <tr>
-                <td>9</td>
-                <td>1</td>
-                <td>2</td>
-                <td>3</td>
-            </tr>
-            <tr>
-                <td>4</td>
-                <td>5</td>
-                <td>6</td>
-                <td>7</td>
-            </tr>
-            <tr>
-                <td>8</td>
-                <td>9</td>
-                <td>1</td>
-                <td>2</td>
-            </tr>
-            <tr>
-                <td>3</td>
-                <td>4</td>
-                <td>5</td>
-                <td>6</td>
-            </tr>
-            <tr>
-                <td>7</td>
-                <td>8</td>
-                <td>9</td>
-                <td>0</td>
-            </tr>
-            <tr>
-                <td>1</td>
-                <td>2</td>
-                <td>3</td>
-                <td>4</td>
-            </tr>
-            <tr>
-                <td>5</td>
-                <td>6</td>
-                <td>7</td>
-                <td>8</td>
-            </tr>
-            <tr>
-                <td>9</td>
-                <td>9</td>
-                <td>8</td>
-                <td>7</td>
-            </tr>
-        </table>
+            {% else %}
+                Ничего не найденно ...
+            {% endfor %}
+
+        </div>
+
     </div>
 </div>
 

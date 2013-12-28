@@ -28,6 +28,7 @@ trait SnippetTrait
             ->innerJoin('sv', 'snippet', 's', 's.id = sv.snippet_id')
             ->where('svm.object_id = :oid')
             ->andWhere('s.to_object = :type')
+            ->andWhere('svm.object_type = :type')
             ->setParameter('type', $this::OBJECT_TYPE)->setParameter('oid', $id);
         $res = $qb->execute()->fetchAll();
         $out = [];
