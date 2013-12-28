@@ -89,21 +89,23 @@ class ApartmentModel extends AbstractModel
 
     public function getIdsBySnippets($snippets){
         $aids = $apIds = $hIds = [];
-        $hasSnippet = false;
         $qb = $this->db->createQueryBuilder();
         $qb->select('svm.*')
             ->from('snippet_value_match', 'svm')
             ;
         if(isset($snippets['house']) && is_array($snippets['house'])){
             $hSnippet = $snippets['house'];
+            $sysvalCount = 0;
             foreach($hSnippet as $sysname=>$sysval){
                 if(is_array($sysval)){
                     $imploder = '';
                     foreach($sysval as $sv){
                         $imploder .= "'$sv',";
+                        $sysvalCount++;
                     }
                     $qb->andWhere("(svm.sysname = '$sysname' AND svm.sysval in (" . substr($imploder, 0, strlen($imploder) - 1) . "))");
                 }else{
+                    $sysvalCount++;
                     $qb->andWhere("(svm.sysname = '$sysname' AND svm.sysval = '$sysval')");
 
                 }
@@ -113,11 +115,17 @@ class ApartmentModel extends AbstractModel
             $res = $qb->execute()->fetchAll();
             $ids = [];
             foreach($res as $row){
-                $ids[] = $row['object_id'];
+                $ids[$row['object_id']]['sysvals'][] = $row['sysval'];
+            }
+            $normalIds = [];
+            foreach($ids as $k=>$v){
+                if(count($v['sysvals']) == $sysvalCount){
+                    $normalIds[] = $k;
+                }
             }
             //Это ид домов. найдем ид комнат
-            if(count($ids)){
-               $res = $this->db->fetchAll('SELECT id FROM ' . $this->getTable() . ' where house_id in (' . implode(', ', $ids) . ')');
+            if(count($normalIds)){
+               $res = $this->db->fetchAll('SELECT id FROM ' . $this->getTable() . ' where house_id in (' . implode(', ', $normalIds) . ')');
                if(count($res)){
                    foreach($res as $row){
                        $hIds[$row['id']]= $row['id'];
@@ -129,25 +137,34 @@ class ApartmentModel extends AbstractModel
 
         if(isset($snippets['ap']) && is_array($snippets['ap'])){
             $hSnippet = $snippets['ap'];
+            $sysvalCount = 0;
             foreach($hSnippet as $sysname=>$sysval){
                 if(is_array($sysval)){
                     $imploder = '';
                     foreach($sysval as $sv){
                         $imploder .= "'$sv',";
+                        $sysvalCount++;
                     }
                     $qb->andWhere("(svm.sysname = '$sysname' AND svm.sysval in (" . substr($imploder, 0, strlen($imploder) - 1) . "))");
                 }else{
+                    $sysvalCount++;
                     $qb->andWhere("(svm.sysname = '$sysname' AND svm.sysval = '$sysval')");
 
                 }
-
-
             }
             $qb->andWhere('svm.object_type = 2');
             $res = $qb->execute()->fetchAll();
+
+            $ids = [];
             if(count($res)){
                 foreach($res as $row){
-                    $apIds[$row['object_id']]= $row['object_id'];
+                    $ids[$row['object_id']]['sysvals'][] = $row['sysval'];
+                    //$apIds[$row['object_id']]= $row[''];
+                }
+                foreach($ids as $k=>$v){
+                    if(count($v['sysvals']) == $sysvalCount){
+                        $apIds[$k]= $k;
+                    }
                 }
             }
         }
