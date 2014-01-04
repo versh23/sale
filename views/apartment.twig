@@ -97,7 +97,9 @@
             <div class="row">
                 <div class="col-md-12">
                     {% autoescape false %}
-                    {{ apartment.custom_text|default('Текст для квартиры не заполнен') }}
+                        <div class="custom-text">
+                            {{ apartment.custom_text|default('Текст для квартиры не заполнен') }}
+                        </div>
                     {% endautoescape %}
                 </div>
             </div>

@@ -24,7 +24,7 @@ class ImageService
     }
 
     public function getThumb($image, $width = 100, $height = 100, $mode = ImageInterface::THUMBNAIL_INSET){
-
+        if(!isset($image['path'])) return null;
         $size    = new Box($width, $height);
         $targetPath = $this->uploadService->getTargetDir($image['path'], UploadService::DIR_THUMB);
         $hashName =$this->uploadService->getHashName($image['path']);

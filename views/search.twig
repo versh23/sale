@@ -1,6 +1,6 @@
 {% extends 'layout.twig' %}
 {% block title %}
-    Поиск
+    Подбор
 {% endblock %}
 {% block css %}
     {{ parent() }}
@@ -108,6 +108,7 @@
                     <div class="form-group">
                         <div class="col-md-12">
                             <button type="submit" class="btn btn-default">Найти</button>
+                            <div class="compare-button btn btn-default pull-right" onclick="$('#compare_form').submit();">Сравнить</div>
                         </div>
                     </div>
                 </form>
@@ -116,10 +117,16 @@
     </div>
     <div class="col-md-8">
         <div class="list-group">
+            <form action="{{ url('search.Compare') }}" method="get" id="compare_form">
             {% for ap in apartments %}
                 <div class="row" style="padding-bottom: 30px;">
                     <div class="col-md-4">
                         <img class="img-responsive" src="{{ getThumb(apartmentImages[ap.id][0], 700, 450, 'outbound') }}">
+                        <div class="checkbox">
+                            <label>
+                                <input class="compare-check" type="checkbox" name="ap[]" value="{{ ap.id }}"> Сравнить
+                            </label>
+                        </div>
                     </div>
                     <div class="col-md-8">
                         <a href="{{ url('apartment.show', {id : ap.id}) }}" class="list-group-item">
@@ -170,6 +177,14 @@
                                     </tr>
                                 {% endfor %}
                             {% endif %}
+                            {% if houseSnippets[ap.id] %}
+                                {% for k,v in houseSnippets[ap.id] %}
+                                    <tr>
+                                        <td>{{ k }}</td>
+                                        <td>{{ v|join(', ') }}</td>
+                                    </tr>
+                                {% endfor %}
+                            {% endif %}
 
                         </table>
                     </div>
@@ -178,7 +193,7 @@
             {% else %}
                 Ничего не найденно ...
             {% endfor %}
-
+            </form>
         </div>
 
     </div>
@@ -190,6 +205,18 @@
 
 {% block js %}
     {{ parent() }}
+    <script>
+        $(function(){
+            $('.compare-button').hide();
 
+           $('.compare-check').change(function(){
+               if($('.compare-check').serializeArray().length >= 2){
+                   $('.compare-button').show();
+               }else{
+                   $('.compare-button').hide();
+               }
+           });
+        });
+    </script>
 {% endblock %}
 

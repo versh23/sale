@@ -1,0 +1,69 @@
+{% extends 'layout.twig' %}
+{% block title %}
+    Сравнение
+{% endblock %}
+{% block css %}
+    {{ parent() }}
+{% endblock %}
+{% block body %}
+<div class="row">
+    <div class="col-md-12">
+        <table class="table table-hover">
+
+        </table>
+       {# <table class="table table-hover">
+            <thead>
+            <tr>
+                <td>Фото</td>
+                <td>Адрес</td>
+                <td>Тип материала</td>
+                <td>Дата сдачи</td>
+                <td>Расстояние от центра, м.</td>
+                <td>Кол-во комнат</td>
+                <td>Площадь</td>
+                <td>Цена</td>
+            </tr>
+            </thead>
+            <tbody>
+
+
+            {% for ap in apartments %}
+                <tr>
+                    {% set img = apartmentImages[ap.id][0] %}
+                    {% set house = apartmentHouse[ap.id] %}
+                    <td>
+                        <a href="{{ url('apartment.show', {id: ap.id}) }}" title="{{ img.title }}">
+                            <img src="{{ getThumb(img, 150, 90, 'outbound') }}" alt="{{ img.description }}" />
+                        </a>
+                    </td>
+                    <td>{{ house.address }}</td>
+                    <td {% if diff.material %} class="diff" {% endif %}>
+                        {% if house.material == 1 %}
+                            Панельный
+                        {% elseif(house.material == 2) %}
+                            Кирпичный
+                        {% else %}
+                            Монолитный
+                        {% endif %}
+                    </td>
+                    <td>{{ house.deliverydate }}</td>
+                    <td>{{ house.distance }}</td>
+                    <td>{{ ap.cnt_room }}</td>
+                    <td {% if diff.square %} class="diff" {% endif %}>{{ ap.square }}</td>
+                    <td>{{ ap.cost }}</td>
+
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>#}
+    </div>
+</div>
+
+
+
+{% endblock %}
+
+{% block js %}
+    {{ parent() }}
+{% endblock %}
+

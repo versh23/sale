@@ -5,5 +5,10 @@ body {
     float: left;
     margin-right: 20px;
 }
-
-
+.custom-text{
+    text-align: left;
+}
+.diff{
+    font-weight: bold;
+    color: red  ;
+}
