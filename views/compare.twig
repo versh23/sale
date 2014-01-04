@@ -8,20 +8,18 @@
 {% block body %}
 <div class="row">
     <div class="col-md-12">
-        <table class="table table-hover">
-
-        </table>
-       {# <table class="table table-hover">
+       <table id="diff-table" class="table table-hover">
             <thead>
             <tr>
-                <td>Фото</td>
-                <td>Адрес</td>
-                <td>Тип материала</td>
-                <td>Дата сдачи</td>
-                <td>Расстояние от центра, м.</td>
-                <td>Кол-во комнат</td>
-                <td>Площадь</td>
-                <td>Цена</td>
+                <td class="diff-main">Фото</td>
+                <td {% if diff.address %} class="diff-main" {% endif %}>Адрес</td>
+                <td {% if diff.material %} class="diff-main" {% endif %}>Тип материала</td>
+                <td {% if diff.deliverydate %} class="diff-main" {% endif %}>Дата сдачи</td>
+                <td {% if diff.distance %} class="diff-main" {% endif %}>Расстояние от центра, м.</td>
+                <td {% if diff.cnt_room %} class="diff-main" {% endif %}>Кол-во комнат</td>
+                <td {% if diff.square %} class="diff-main" {% endif %}>Площадь</td>
+                <td {% if diff.cost %} class="diff-main" {% endif %}>Цена</td>
+                <td class="snippets">Доп. признаки</td>
             </tr>
             </thead>
             <tbody>
@@ -31,12 +29,12 @@
                 <tr>
                     {% set img = apartmentImages[ap.id][0] %}
                     {% set house = apartmentHouse[ap.id] %}
-                    <td>
+                    <td class="diff-main">
                         <a href="{{ url('apartment.show', {id: ap.id}) }}" title="{{ img.title }}">
                             <img src="{{ getThumb(img, 150, 90, 'outbound') }}" alt="{{ img.description }}" />
                         </a>
                     </td>
-                    <td>{{ house.address }}</td>
+                    <td {% if diff.address %} class="diff" {% endif %}>{{ house.address }}</td>
                     <td {% if diff.material %} class="diff" {% endif %}>
                         {% if house.material == 1 %}
                             Панельный
@@ -46,16 +44,43 @@
                             Монолитный
                         {% endif %}
                     </td>
-                    <td>{{ house.deliverydate }}</td>
-                    <td>{{ house.distance }}</td>
-                    <td>{{ ap.cnt_room }}</td>
+                    <td {% if diff.deliverydate %} class="diff" {% endif %}>{{ house.deliverydate }}</td>
+                    <td {% if diff.distance %} class="diff" {% endif %}>{{ house.distance }}</td>
+                    <td {% if diff.cnt_room %} class="diff" {% endif %}>{{ ap.cnt_room }}</td>
                     <td {% if diff.square %} class="diff" {% endif %}>{{ ap.square }}</td>
-                    <td>{{ ap.cost }}</td>
+                    <td {% if diff.cost %} class="diff" {% endif %}>{{ ap.cost }}</td>
 
+                    <td>
+                        <table class="table-snip">
+                            {% if apartmentSnippets[ap.id] %}
+                                {% for k,v in apartmentSnippets[ap.id] %}
+                                    <tr>
+                                        <td >{{ k }}</td>
+                                        <td {% if diff[k] %} class="dop diff" {% endif %}>{{ v|join(', ') }}</td>
+                                    </tr>
+                                {% endfor %}
+                            {% endif %}
+                            {% if houseSnippets[ap.id] %}
+                                {% for k,v in houseSnippets[ap.id] %}
+                                    <tr>
+                                        <td >{{ k }}</td>
+                                        <td {% if diff[k] %} class="dop diff" {% endif %}>{{ v|join(', ') }}</td>
+                                    </tr>
+                                {% endfor %}
+                            {% endif %}
+                        </table>
+
+                    </td>
                 </tr>
             {% endfor %}
             </tbody>
-        </table>#}
+        </table>
+
+        <div class="checkbox">
+            <label>
+                <input class="compare-check" id="showdiff" type="checkbox" name="ap[]" value=""> Показать только различия
+            </label>
+        </div>
     </div>
 </div>
 
@@ -65,5 +90,31 @@
 
 {% block js %}
     {{ parent() }}
+    <script>
+        $(function(){
+           $('#showdiff').change(function(){
+
+               var $table = $('#diff-table');
+
+               if($(this).is(':checked')){
+
+                   $table.find('td').hide();
+                   $table.find('td.diff-main').show();
+                   $table.find('td.diff').show();
+
+                   if($('.table-snip:first').find('td.diff').length > 0){
+                       $('.snippets').show();
+                       $('.table-snip').each(function(){
+                           var $td = $(this).find('td.diff');
+                           $td.parent().find('td').show();
+                           $(this).parent().show();
+                       });
+                   }
+               }else{
+                   $table.find('td').show();
+               }
+           });
+        });
+    </script>
 {% endblock %}
 
