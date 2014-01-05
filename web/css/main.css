@@ -15,3 +15,10 @@ body {
 .table-snip {
     margin-top: -9px;
 }
+.sale {
+    background-color: rgb(255, 200, 200) !important;
+    cursor: pointer;
+}
+td.room{
+    text-align: center;
+}

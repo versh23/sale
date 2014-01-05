@@ -2,7 +2,11 @@
 {% block title %} Админка | Продажи {% endblock %}
 {% block content %}
     <div class="col-sm-8 col-md-8">
-        <p><a class="btn pull-right btn-success" href="{{ path('adminSales.Add') }}">Добавить</a></p>
+        <p>
+            <a class="btn pull-left btn-success" href="{{ path('adminSales.Stats') }}">Статистика</a>
+
+            <a class="btn pull-right btn-success" href="{{ path('adminSales.Add') }}">Добавить</a>
+        </p>
 
         <div class="clearfix"></div>
         <p></p>
@@ -10,7 +14,7 @@
             {% for sale in sales %}
                 <li class="list-group-item">
                     <span class="b-house-list__name">
-                        {{ sale.id }} ({{ sale.fio }})
+                        {{ sale.name }}, {{ sale.address }} - {{ sale.cnt_room }} комнат(ы) ({{ sale.fio }})
                     </span>
                     <div class="pull-right btn-group">
                         <a href="{{ path('adminSales.Edit', {id : sale.id}) }}" type="button" class="btn btn-warning">Изменить</a>

@@ -24,7 +24,7 @@ class ApartmentModel extends AbstractModel
         $apartmentTable->addColumn('house_id', 'integer');
         $apartmentTable->addForeignKeyConstraint($this->app['model.house']->getTable(), ['house_id'], ['id'], ['onDelete' => 'CASCADE']);
         $apartmentTable->addColumn('cnt_room', 'integer');
-        $apartmentTable->addColumn('square', 'integer');
+        $apartmentTable->addColumn('square', 'float');
         $apartmentTable->addColumn('cost', 'integer');
         $apartmentTable->addColumn('custom_text', 'text');
 

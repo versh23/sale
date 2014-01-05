@@ -124,12 +124,10 @@ class ApartmentController implements ControllerProviderInterface
                     new Assert\Type('int')
                 ]
             ])
-            ->add('square', 'integer',[
+            ->add('square', 'number',[
                 'label'=>'Квадратура',
                 'constraints'   =>  [
-                    new Assert\NotBlank(),
-                    new Assert\Type('int')
-                ]
+                    new Assert\NotBlank()                ]
             ])
             ->add('cost', 'integer',[
                 'label'=>'Цена',

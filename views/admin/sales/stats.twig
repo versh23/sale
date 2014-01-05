@@ -1,0 +1,92 @@
+{% extends 'admin/layout.twig' %}
+{% block title %} Админка | Продажи - статистика {% endblock %}
+{% block content %}
+<div class="col-md-8">
+    <form action="{{ url('adminSales.Stats') }}" method="get" class="form-inline">
+        <div class="form-group">
+            <label class="control-label" for="">
+                Выберите дом
+            </label>
+            <select class="form-control" name="house" id="">
+                {% for h in houses %}
+                    <option {% if cHouse == h.id %} selected {% endif %} value="{{ h.id }}">{{ h.name }}</option>
+                {% endfor %}
+            </select>
+
+        </div>
+        <div class="form-group" style="margin-top: 25px;">
+            <input class="btn btn-default" type="submit" name="" id="" value="Показать"/>
+        </div>
+
+    </form>
+
+    {% if cnt_room is not null and floor is not null%}
+        {% set croom = 1 %}
+        <table class="table table-hover stats" style="margin-top: 15px;   ">
+            {% for i in range(1, floor) %}
+                <tr>
+                    <td>{{ i }} этаж</td>
+                    {% for j in range(1, roomPerFloor) %}
+                        <td {% if croom in csales %}data-toggle="modal"{% endif %} data-target="#m{{ croom }}" class="room {% if croom in csales %}sale{% endif %}">{{ croom }}
+                        </td>
+                        {% set croom = croom + 1 %}
+                    {% endfor %}
+                </tr>
+            {% endfor %}
+        </table>
+
+        {% for r in csales %}
+        <div id="m{{ r }}" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                        <h4 class="modal-title" id="myModalLabel">Информация</h4>
+                    </div>
+                    <div class="modal-body">
+                        {% set rowInfo = saleinfo[r] %}
+                        <table class="table table-bordered" style="width: 100%;">
+                            <tr>
+                                <td>Договор</td>
+                                <td style="">{{ rowInfo.dogovor }}</td>
+                            </tr>
+                            <tr>
+                                <td>Номер квартиры</td>
+                                <td style="">{{ rowInfo.ap_number }}</td>
+                            </tr>
+                            <tr>
+                                <td>Номер подъезда</td>
+                                <td style="">{{ rowInfo.ap_pod }}</td>
+                            </tr>
+                            <tr>
+                                <td>ФИО</td>
+                                <td style="">{{ rowInfo.fio }}</td>
+                            </tr>
+                            <tr>
+                                <td>Телефон</td>
+                                <td style="">{{ rowInfo.phone }}</td>
+                            </tr>
+
+                            <tr>
+                                <td>Паспорт</td>
+                                <td style="">{{ rowInfo.passport }}</td>
+                            </tr>
+
+                            <tr>
+                                <td>Адрес покупателя</td>
+                                <td style="">{{ rowInfo.address }}</td>
+                            </tr>
+                        </table>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Закрыть</button>
+                    </div>
+                </div><!-- /.modal-content -->
+            </div><!-- /.modal-dialog -->
+        </div>
+        {% endfor %}
+    {% endif %}
+
+</div>
+
+{% endblock %}   

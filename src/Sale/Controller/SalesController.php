@@ -71,6 +71,40 @@ class SalesController implements ControllerProviderInterface
             $app['model.sales']->delete($id);
             return $app->redirect($app->url('adminSales.Index'));
         })->bind('adminSales.Remove');
+
+        $controllers->get('/stats', function (Request $request) use ($app) {
+
+            $houses = $app['model.house']->getList();
+            $cHouse = $request->get('house', null);
+            $cnt_room = $floor = $roomPerFloor = $csales = $saleinfo = null;
+
+            if(!is_null($cHouse)){
+                $_house = $app['model.house']->get($cHouse);
+                $cnt_room = $_house['count_apartments'];
+                $floor = $_house['floor'];
+                $roomPerFloor = $_house['count_1'] + $_house['count_2'] + $_house['count_3'];
+                $_csales = $app['model.sales']->getForHouse($cHouse);
+
+                foreach($_csales as $row){
+                    $csales[] = $row['ap_number'];
+                    $saleinfo[$row['ap_number']] = $row;
+                }
+
+            }
+            return $app->renderView('admin/sales/stats.twig',
+            [
+                'houses'    =>  $houses,
+                'cHouse'    =>  $cHouse,
+                'cnt_room'  =>  $cnt_room,
+                'floor'     =>  $floor,
+                'roomPerFloor'=>$roomPerFloor,
+                'csales'    => $csales,
+                'saleinfo'  => $saleinfo
+            ]);
+        })->bind('adminSales.Stats');
+
+
+
         return $controllers;
     }
 
@@ -79,7 +113,7 @@ class SalesController implements ControllerProviderInterface
         $list = $this->app['model.apartment']->getWithHouseName();
         $normalList =[];
         foreach($list as $row){
-            $normalList[$row['aid']] = $row['hname'] . ' - ' . $row['aid'];
+            $normalList[$row['aid']] = $row['hname'] . ', ' . $row['adr'] . ' - ' . $row['cnt_room'] . ' комнат(ы)';
         }
         $form = $this->app->form($data)
             ->add('ap_number', 'integer', [
