@@ -77,7 +77,7 @@ class SalesController implements ControllerProviderInterface
             $houses = $app['model.house']->getList();
             $cHouse = $request->get('house', null);
             $cPod = $request->get('pod', 1);
-            $cnt_room = $floor = $roomPerFloor = $csales = $saleinfo = null;
+            $cnt_room = $floor = $roomPerFloor = $csales = $saleinfo = $mask = null;
 
             if(!is_null($cHouse)){
                 $_house = $app['model.house']->get($cHouse);
