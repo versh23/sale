@@ -41,14 +41,15 @@ class SalesModel extends AbstractModel
         return $this->db->fetchAll('SELECT s.*, ap.cnt_room, h.name, h.address FROM ' . $this->getTable() . ' as s inner join apartment as ap on ap.id = s.apartment_id inner join house as h on h.id = ap.house_id');
     }
 
-    public function getForHouse($id){
+    public function getForHouse($id, $pod){
         $qb = $this->db->createQueryBuilder();
 
         $qb->select('*')
             ->from($this->getTable(), 's')
             ->innerJoin('s', $this->app['model.apartment']->getTable(), 'ap', 'ap.id=s.apartment_id')
             ->innerJoin('ap', $this->app['model.house']->getTable(), 'h', 'h.id = ap.house_id')
-            ->where('h.id = :id')->setParameter('id', $id);
+            ->where('h.id = :id')->setParameter('id', $id)
+            ->andWhere('s.ap_pod = :pod')->setParameter('pod', $pod);
 
         return $qb->execute()->fetchAll();
     }

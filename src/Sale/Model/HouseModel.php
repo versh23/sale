@@ -42,6 +42,9 @@ class HouseModel extends AbstractModel
         $houseTable->addColumn('count_3', 'integer');
 
         $houseTable->addColumn('count_pod', 'integer');
+
+        //Маска квартир на этаже
+        $houseTable->addColumn('mask', 'integer');
         $houseTable->addColumn('distance', 'integer');
 
         $houseTable->addColumn('custom_text', 'text');

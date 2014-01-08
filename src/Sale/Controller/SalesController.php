@@ -76,14 +76,16 @@ class SalesController implements ControllerProviderInterface
 
             $houses = $app['model.house']->getList();
             $cHouse = $request->get('house', null);
+            $cPod = $request->get('pod', 1);
             $cnt_room = $floor = $roomPerFloor = $csales = $saleinfo = null;
 
             if(!is_null($cHouse)){
                 $_house = $app['model.house']->get($cHouse);
+                $mask = $_house['mask'];
                 $cnt_room = $_house['count_apartments'];
                 $floor = $_house['floor'];
                 $roomPerFloor = $_house['count_1'] + $_house['count_2'] + $_house['count_3'];
-                $_csales = $app['model.sales']->getForHouse($cHouse);
+                $_csales = $app['model.sales']->getForHouse($cHouse, $cPod);
 
                 foreach($_csales as $row){
                     $csales[] = $row['ap_number'];
@@ -94,7 +96,9 @@ class SalesController implements ControllerProviderInterface
             return $app->renderView('admin/sales/stats.twig',
             [
                 'houses'    =>  $houses,
+                'mask'    =>  $mask,
                 'cHouse'    =>  $cHouse,
+                'cPod'    =>  $cPod,
                 'cnt_room'  =>  $cnt_room,
                 'floor'     =>  $floor,
                 'roomPerFloor'=>$roomPerFloor,

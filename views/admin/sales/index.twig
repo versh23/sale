@@ -14,7 +14,7 @@
             {% for sale in sales %}
                 <li class="list-group-item">
                     <span class="b-house-list__name">
-                        {{ sale.name }}, {{ sale.address }} - {{ sale.cnt_room }} комнат(ы) ({{ sale.fio }})
+                        {{ sale.name }}, {{ sale.address }}, <i>{{ sale.ap_pod }} поздъезд</i> - {{ sale.cnt_room }} комнат(ы) ({{ sale.fio }})
                     </span>
                     <div class="pull-right btn-group">
                         <a href="{{ path('adminSales.Edit', {id : sale.id}) }}" type="button" class="btn btn-warning">Изменить</a>

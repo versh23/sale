@@ -176,6 +176,13 @@ class HouseController implements ControllerProviderInterface
                     new Assert\NotBlank()
                 ]
             ])
+            ->add('mask', 'integer',[
+                'label'=>'Маска расположения квартир на этаже, по порядку (например - 1112)',
+                'constraints'   =>  [
+                    new Assert\NotBlank()
+                ]
+            ])
+
 
             ->add('custom_text', 'textarea',[
                 'label'=>'Контент',

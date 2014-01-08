@@ -14,12 +14,18 @@
             </select>
 
         </div>
+        <div class="form-group">
+            <label class="control-label" for="">
+                Выберите подъезд
+            </label>
+            <input class="form-control" type="text" value="{{ cPod|default(1) }}" name="pod"/>
+
+        </div>
         <div class="form-group" style="margin-top: 25px;">
             <input class="btn btn-default" type="submit" name="" id="" value="Показать"/>
         </div>
 
     </form>
-
     {% if cnt_room is not null and floor is not null%}
         {% set croom = 1 %}
         <table class="table table-hover stats" style="margin-top: 15px;   ">
@@ -27,7 +33,8 @@
                 <tr>
                     <td>{{ i }} этаж</td>
                     {% for j in range(1, roomPerFloor) %}
-                        <td {% if croom in csales %}data-toggle="modal"{% endif %} data-target="#m{{ croom }}" class="room {% if croom in csales %}sale{% endif %}">{{ croom }}
+                        <td {% if croom in csales %}data-toggle="modal"{% endif %} data-target="#m{{ croom }}" class="room {% if croom in csales %}sale{% endif %}">
+                            <b>№{{ croom }}</b><br/>{{ mask|slice(j-1,1) }} комната(ы)
                         </td>
                         {% set croom = croom + 1 %}
                     {% endfor %}
@@ -53,6 +60,10 @@
                             <tr>
                                 <td>Номер квартиры</td>
                                 <td style="">{{ rowInfo.ap_number }}</td>
+                            </tr>
+                            <tr>
+                                <td>Кол-во комнат</td>
+                                <td style="">{{ rowInfo.cnt_room }}</td>
                             </tr>
                             <tr>
                                 <td>Номер подъезда</td>
