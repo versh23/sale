@@ -26,6 +26,20 @@ class HouseController implements ControllerProviderInterface
         // creates a new controller based on the default route
         $controllers = $app['controllers_factory'];
 
+        $controllers->post('/load/pod', function(Request $request) use ($app){
+            if($request->isXmlHttpRequest()){
+                $house = $request->get('house');
+                if(!is_null($house)){
+
+                    $houseFull = $app['model.house']->get($house);
+                    foreach (range(1, $houseFull['count_pod']) as $number) {
+                        $pods[] = $number;
+                    }
+                    return $app->json(['pods'=>$pods]);
+                }
+            }
+        })->bind('loadPodFromHouse');
+
         $controllers->get('/', function () use ($app) {
             $houses = $app['model.house']->getAll();
             return $app->render('admin/house/index.twig', [

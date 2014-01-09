@@ -7,7 +7,7 @@
             <label class="control-label" for="">
                 Выберите дом
             </label>
-            <select class="form-control" name="house" id="">
+            <select class="form-control" name="house" id="select-house">
                 {% for h in houses %}
                     <option {% if cHouse == h.id %} selected {% endif %} value="{{ h.id }}">{{ h.name }}</option>
                 {% endfor %}
@@ -18,7 +18,9 @@
             <label class="control-label" for="">
                 Выберите подъезд
             </label>
-            <input class="form-control" type="text" value="{{ cPod|default(1) }}" name="pod"/>
+            <select class="form-control" name="pod" id="insert-pods">
+
+            </select>
 
         </div>
         <div class="form-group" style="margin-top: 25px;">
@@ -100,4 +102,28 @@
 
 </div>
 
-{% endblock %}   
+{% endblock %}
+{% block js %}
+    {{ parent() }}
+    <script>
+        function updatePod(house){
+            $.post( "{{ path('loadPodFromHouse') }}", {'house': house}, function( data ) {
+                var $pods = $('#insert-pods');
+                $pods.empty();
+                $.each(data.pods, function(){
+                    var pod = this;
+                    $('<option></option>').val(pod).text(this).appendTo($pods);
+                });
+            });
+        }
+
+        $(function(){
+
+            updatePod({{ cHouse }});
+
+           $('#select-house').change(function(){
+               updatePod($(this).val());
+           });
+        });
+    </script>
+{% endblock %}
