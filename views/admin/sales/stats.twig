@@ -118,9 +118,11 @@
         }
 
         $(function(){
-
-            updatePod({{ cHouse }});
-
+            {% if cHouse %}
+                updatePod({{ cHouse }});
+            {% else %}
+                updatePod({{ houses[0].id }});
+            {% endif %}
            $('#select-house').change(function(){
                updatePod($(this).val());
            });
