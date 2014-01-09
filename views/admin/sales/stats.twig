@@ -27,7 +27,7 @@
 
     </form>
     {% if cnt_room is not null and floor is not null%}
-        {% set croom = 1 %}
+        {% set croom = 1 + offset %}
         <table class="table table-hover stats" style="margin-top: 15px;   ">
             {% for i in range(1, floor) %}
                 <tr>

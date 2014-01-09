@@ -167,8 +167,10 @@ class HouseController implements ControllerProviderInterface
             ->add('count_pod', 'integer',[
                 'label'=>'Кол-во подъездов',
                 'constraints'   =>  [
-                    new Assert\NotBlank()
-                ]
+                    new Assert\NotBlank(),
+                    new Assert\GreaterThan(['value'=>0])
+                ],
+
             ])
             ->add('distance', 'integer',[
                 'label'=>'Расстояние от центра, м.',

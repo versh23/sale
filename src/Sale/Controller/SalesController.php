@@ -77,6 +77,8 @@ class SalesController implements ControllerProviderInterface
             $houses = $app['model.house']->getList();
             $cHouse = $request->get('house', null);
             $cPod = $request->get('pod', 1);
+            $offset = 0;
+
             $cnt_room = $floor = $roomPerFloor = $csales = $saleinfo = $mask = null;
 
             if(!is_null($cHouse)){
@@ -86,6 +88,11 @@ class SalesController implements ControllerProviderInterface
                 $floor = $_house['floor'];
                 $roomPerFloor = $_house['count_1'] + $_house['count_2'] + $_house['count_3'];
                 $_csales = $app['model.sales']->getForHouse($cHouse, $cPod);
+
+                $inPod = $_house['count_apartments'] / $_house['count_pod'];
+
+                $offset = ($inPod * $cPod) - $inPod;
+
 
                 foreach($_csales as $row){
                     $csales[] = $row['ap_number'];
@@ -103,7 +110,8 @@ class SalesController implements ControllerProviderInterface
                 'floor'     =>  $floor,
                 'roomPerFloor'=>$roomPerFloor,
                 'csales'    => $csales,
-                'saleinfo'  => $saleinfo
+                'saleinfo'  => $saleinfo,
+                'offset'    =>  $offset
             ]);
         })->bind('adminSales.Stats');
 
