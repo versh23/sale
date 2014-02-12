@@ -45,6 +45,21 @@ class SalesModel extends AbstractModel
         return $this->db->fetchAll('SELECT s.*, ap.cnt_room, h.name, h.address FROM ' . $this->getTable() . ' as s inner join apartment as ap on ap.id = s.apartment_id inner join house as h on h.id = ap.house_id');
     }
 
+    public function getStats($apid){
+        $now = new \DateTime();
+        $year = $now->format('Y');
+        $month = $now->format('m');
+        $nowt = $now->setDate($year, $month, 1)->format('U');
+
+        $res =  $this->db->fetchAll('select count(s.id) as cnt_all, (select count(ss.id) from ' . $this->getTable() . ' as ss where ss.apartment_id = :apid and ss.create_time >= :ctime) as cnt_month from ' . $this->getTable() . ' as s where s.apartment_id = :apid', [
+                'apid'  =>  $apid,
+                'ctime' =>  $nowt
+            ]);
+
+        return $res[0];
+
+    }
+
     public function getForHouse($id, $pod){
         $qb = $this->db->createQueryBuilder();
 

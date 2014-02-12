@@ -38,7 +38,30 @@ class MainController implements ControllerProviderInterface
 
         //Главная админки
         $controllers->get('/admin', function () use ($app) {
-            return $app->render('admin/index.twig', []);
+            $ap = $stats = [];
+            $houses = $app['model.house']->getAll();
+            if(count($houses)){
+                foreach($houses as $h){
+                    $_aps = $app['model.apartment']->getWithHouseName($h['id']);
+
+                    foreach($_aps as $_ap){
+                        $stats[$_ap['id']] = $app['model.sales']->getStats($_ap['id']);
+
+                    }
+
+                    $ap[$h['id']] = $_aps;
+                }
+            }
+
+
+            return $app->render('admin/index.twig', [
+                'houses'    =>  $houses,
+                'apartments'=>  $ap,
+                'stats'     =>  $stats
+            ]);
+
+
+
         })->bind('adminIndex');
 
         $controllers->get('/', function() use($app) {

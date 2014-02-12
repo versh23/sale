@@ -3,5 +3,44 @@
 {% block content %}
 <div class="col-sm-8 col-md-8">
     <p><a class="btn btn-success" href="{{ path('adminPage.mainEdit') }}">Общие настройки</a></p>
+
+    {% for h in houses %}
+        <div style="margin-bottom: 30px;">
+            <p>Сводная статистика по дому <b>{{ h.name }}</b> - <i>{{ h.address }}</i></p>
+
+            {% set ap = apartments[h.id] %}
+            {% set cnt_all = 0 %}
+            {% set cnt_month = 0 %}
+            <table class="table table-hover">
+                <thead>
+                <tr>
+                    <td>Квартира</td>
+                    <td>За текущий месяц</td>
+                    <td>За все время</td>
+                </tr>
+                </thead>
+                <tbody>
+                {% for a in ap %}
+                <tr>
+                    <td>{{ a.cnt_room }} комнатная</td>
+                    <td>{{ stats[a.id].cnt_month }}</td>
+                    <td>{{ stats[a.id].cnt_all }}</td>
+                    {% set cnt_all =  cnt_all + stats[a.id].cnt_all %}
+                    {% set cnt_month = cnt_month + stats[a.id].cnt_month  %}
+                </tr>
+                {% endfor %}
+                <tr class="danger">
+                    <td>Итого</td>
+                    <td>{{ cnt_month }}</td>
+                    <td>{{ cnt_all }}</td>
+                </tr>
+                </tbody>
+
+            </table>
+
+        </div>
+
+    {% endfor %}
+
 </div>
 {% endblock %}   

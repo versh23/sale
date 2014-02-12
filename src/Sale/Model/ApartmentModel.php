@@ -40,6 +40,7 @@ class ApartmentModel extends AbstractModel
         if(!is_null($id)){
             $qb->where('h.id = :id')->setParameter('id', $id);
         }
+        $qb->orderBy('a.cnt_room', 'ASC');
         return $qb->execute()->fetchAll();
     }
     public function getTable()
