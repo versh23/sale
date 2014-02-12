@@ -29,6 +29,10 @@ class SalesModel extends AbstractModel
         $salesTable->addColumn('phone', 'string');
         $salesTable->addColumn('dogovor', 'string');
 
+        $salesTable->addColumn('create_time', 'integer');
+        $salesTable->addColumn('birth_place', 'string');
+        $salesTable->addColumn('birth_day', 'string');
+
         return $salesTable;
     }
 

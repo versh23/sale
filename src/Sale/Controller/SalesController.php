@@ -6,6 +6,7 @@ use SaleApplication;
 use Silex\Application;
 use Silex\ControllerProviderInterface;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Validator\Constraints as Assert;
 
 
@@ -29,6 +30,26 @@ class SalesController implements ControllerProviderInterface
             ]);
         })->bind('adminSales.Index');
 
+        $controllers->get('/dogovor/{id}', function (Request $request, $id) use ($app) {
+
+            $sale = $app['model.sales']->get($id);
+            $ap = $app['model.apartment']->get($sale['apartment_id']);
+            $house = $app['model.house']->get($ap['house_id']);
+
+            $html = $app->renderView('dogovor.twig',[
+                'sale'  =>  $sale,
+                'ap'    =>  $ap,
+                'house' =>  $house
+            ]);
+
+            $pdf = $app['snappy.pdf']->getOutputFromHtml($html);
+
+            $response = new Response($pdf);
+            $response->headers->set('Content-Type', 'application/pdf');
+
+            return $response;
+        })->bind('adminSales.ShowDogovor');
+
         $controllers->match('/add', function (Request $request) use ($app) {
 
             $form = $this->getForm();
@@ -37,6 +58,7 @@ class SalesController implements ControllerProviderInterface
             if($form->isValid()){
 
                 $sale = $form->getData();
+                $sale['create_time'] = time();
                 $id = $app['model.sales']->insert($sale);
                 return $app->redirect($app->url('adminSales.Index'));
             }
@@ -180,7 +202,18 @@ class SalesController implements ControllerProviderInterface
                     new Assert\NotBlank()
                 ]
             ])
-
+            ->add('birth_place', 'text', [
+                'label'=>'Место рождения',
+                'constraints'   =>  [
+                    new Assert\NotBlank()
+                ]
+            ])
+            ->add('birth_day', 'text', [
+                'label'=>'Дата рождения',
+                'constraints'   =>  [
+                    new Assert\NotBlank()
+                ]
+            ])
             ->add('save', 'submit', ['label'=>(is_null($data)) ? 'Добавить' : 'Сохранить'])
 
             ->getForm();

@@ -18,7 +18,8 @@
                     </span>
                     <div class="pull-right btn-group">
                         <a href="{{ path('adminSales.Edit', {id : sale.id}) }}" type="button" class="btn btn-warning">Изменить</a>
-                        <a href="{{ path('adminSales.Remove', {id : sale.id}) }}" type="button" class="btn btn-danger">Удалить</a>
+                        <a href="{{ path('adminSales.ShowDogovor', {id : sale.id}) }}" type="button" class="btn btn-success">Договор</a>
+                        <a onclick="return confirm('Удалить точно?');" href="{{ path('adminSales.Remove', {id : sale.id}) }}" type="button" class="btn btn-danger">Удалить</a>
                     </div>
                     <div class="clearfix"></div>
                 </li>

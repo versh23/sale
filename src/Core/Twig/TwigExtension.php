@@ -2,7 +2,6 @@
 
 namespace Core\Twig;
 
-
 class TwigExtension extends \Twig_Extension{
 
     private $app;
@@ -20,6 +19,12 @@ class TwigExtension extends \Twig_Extension{
     {
         return [
           new \Twig_SimpleFunction('getThumb', [$this->app['service.image'], 'getThumb'])
+        ];
+    }
+
+    public function getFilters(){
+        return [
+            new \Twig_SimpleFilter('num2text', ['Core\Helper\Numtext', 'num2str']),
         ];
     }
 }

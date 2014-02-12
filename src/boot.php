@@ -98,3 +98,4 @@ $app['twig'] = $app->share($app->extend('twig', function($twig, $app) {
 }));
 
 $app->register(new \Core\Provider\BootstrapServiceProvider());
+$app->register(new \Core\Provider\SnappyServiceProvider());
